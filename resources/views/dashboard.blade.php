@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Your Itineraries') }}
             </h2>
-            <button @click="openForm = true" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+            <button @click="openForm = true" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded">
                 + Add Itinerary
             </button>
 

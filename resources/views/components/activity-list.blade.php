@@ -16,7 +16,7 @@
         {{-- Sequence bubble --}}
         <span
             class="self-center flex h-6 w-6 items-center justify-center rounded-full
-                   text-xs font-bold bg-blue-600 text-white dark:bg-blue-400">
+                   text-xs font-bold bg-primary text-white dark:bg-primary-light">
             {{ $index + 1 }}
         </span>
 
@@ -54,7 +54,7 @@
                        activity      = {{ $activity->toJson() }};
                        openEditModal = true;
                    "
-                   class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200 text-xs font-medium">
+                   class="text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary-light text-xs font-medium">
                     Edit
                 </a>
 

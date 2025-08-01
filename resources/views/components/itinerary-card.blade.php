@@ -20,7 +20,7 @@
         </p>
 
         <div class="mt-2 flex items-center gap-2 text-sm">
-            <a href="{{ route('itineraries.edit', $itinerary->id) }}" class="text-indigo-600 hover:underline">Edit</a>
+            <a href="{{ route('itineraries.edit', $itinerary->id) }}" class="text-primary hover:underline">Edit</a>
 
             <form method="POST" action="{{ route('itineraries.destroy', $itinerary->id) }}" onsubmit="return confirm('Delete this itinerary?')">
                 @csrf
@@ -42,7 +42,7 @@
         <button @click="
         activity = {};           /* blank object for new record */
         openActivityForm = true
-    " class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded">
+    " class="px-3 py-1 bg-primary hover:bg-primary-dark text-white text-sm rounded">
             + Add Activity
         </button>
     </div>
