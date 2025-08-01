@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Itinerary;
+use App\Models\BudgetEntry;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -58,11 +59,24 @@ class ItineraryController extends Controller
      */
     public function show(string $id)
     {
-        $itinerary = Itinerary::with(['activities', 'groupMembers'])
+        $itinerary = Itinerary::with(['activities', 'groupMembers', 'budgetEntries'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
-        return view('itineraries.show', compact('itinerary'));
+        $primaryLocation = $itinerary->activities->first()->location ?? null;
+        $averageBudget = null;
+
+        if ($primaryLocation) {
+            $averageBudget = BudgetEntry::whereIn('itinerary_id', function ($query) use ($primaryLocation, $itinerary) {
+                $query->select('itineraries.id')
+                    ->from('itineraries')
+                    ->join('activities', 'itineraries.id', '=', 'activities.itinerary_id')
+                    ->where('activities.location', $primaryLocation)
+                    ->where('itineraries.id', '!=', $itinerary->id);
+            })->avg('amount');
+        }
+
+        return view('itineraries.show', compact('itinerary', 'averageBudget', 'primaryLocation'));
     }
 
     /**
