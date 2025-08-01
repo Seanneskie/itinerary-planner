@@ -11,6 +11,6 @@
                class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
     </div>
     <div class="text-right">
-        <button class="px-3 py-1 bg-primary hover:bg-primary-dark text-white rounded text-sm">Add</button>
+        <x-primary-button type="submit" class="text-xs">Add</x-primary-button>
     </div>
 </form>
