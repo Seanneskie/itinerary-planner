@@ -14,7 +14,11 @@ class ItineraryController extends Controller
      */
     public function index()
     {
-        //
+        $itineraries = Itinerary::with('activities')
+            ->where('user_id', Auth::id())
+            ->get();
+
+        return view('dashboard', compact('itineraries'));
     }
 
     /**
@@ -54,7 +58,11 @@ class ItineraryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $itinerary = Itinerary::with('activities')
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('itineraries.show', compact('itinerary'));
     }
 
     /**
@@ -62,7 +70,8 @@ class ItineraryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $itinerary = Itinerary::where('user_id', Auth::id())->findOrFail($id);
+        return view('itineraries.edit', compact('itinerary'));
     }
 
     /**
@@ -70,7 +79,18 @@ class ItineraryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $itinerary = Itinerary::where('user_id', Auth::id())->findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $itinerary->update($validated);
+
+        return redirect()->route('dashboard')->with('success', 'Itinerary updated.');
     }
 
     /**
@@ -78,6 +98,9 @@ class ItineraryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $itinerary = Itinerary::where('user_id', Auth::id())->findOrFail($id);
+        $itinerary->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Itinerary deleted.');
     }
 }
