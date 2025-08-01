@@ -88,7 +88,7 @@
 
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
         @foreach ($itineraries as $itinerary)
-            <x-itinerary-card :itinerary="$itinerary" />
+            <x-itinerary-card :itinerary="$itinerary" :show-actions="false" />
 
         @endforeach
         {{ $itineraries->links() }}
