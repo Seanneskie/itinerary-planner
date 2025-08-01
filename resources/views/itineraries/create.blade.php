@@ -7,7 +7,7 @@
 
     <div class="py-10 max-w-2xl mx-auto sm:px-6 lg:px-8" x-data="{ open: false }">
         <button @click="open = !open"
-            class="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+            class="mb-4 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded">
             <span x-show="!open">Show Form</span>
             <span x-show="open">Hide Form</span>
         </button>

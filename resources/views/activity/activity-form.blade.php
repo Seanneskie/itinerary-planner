@@ -44,7 +44,7 @@
                 <input type="text" name="title" required
                        x-model="activity.title"
                        class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
-                              ring-1 ring-inset ring-gray-300 focus:ring-indigo-500 focus:ring-2 outline-none">
+                              ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
 
             <!-- Location -->
@@ -53,7 +53,7 @@
                 <input type="text" name="location"
                        x-model="activity.location"
                        class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
-                              ring-1 ring-inset ring-gray-300 focus:ring-indigo-500 focus:ring-2 outline-none">
+                              ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
 
             <!-- Map selector -->
@@ -133,7 +133,7 @@
                 <input type="datetime-local" name="scheduled_at" required
                        x-model="activity.scheduled_at"
                        class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
-                              ring-1 ring-inset ring-gray-300 focus:ring-indigo-500 focus:ring-2 outline-none">
+                              ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
 
             <!-- Notes -->
@@ -142,7 +142,7 @@
                 <textarea name="note" rows="1"
                           x-model="activity.note"
                           class="px-3 py-2 rounded-md resize-y bg-gray-50 dark:bg-gray-900 dark:text-white
-                                 ring-1 ring-inset ring-gray-300 focus:ring-indigo-500 focus:ring-2 outline-none"></textarea>
+                                 ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none"></textarea>
             </div>
         </div>
 
