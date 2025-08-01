@@ -43,6 +43,16 @@
         <main>
             {{ $slot }}
         </main>
+        @if (session('success'))
+            <x-toast class="bg-green-600">
+                {{ session('success') }}
+            </x-toast>
+        @endif
+        @if (session('error'))
+            <x-toast class="bg-red-600">
+                {{ session('error') }}
+            </x-toast>
+        @endif
     </div>
     @stack('scripts')
 

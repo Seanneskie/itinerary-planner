@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Activity;
+use Illuminate\Support\Facades\Auth;
 class ActivityController extends Controller
 {
     protected $fillable = ['title', 'note', 'scheduled_at', 'location', 'latitude', 'longitude', 'itinerary_id'];
@@ -90,8 +91,14 @@ class ActivityController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Activity $activity)
     {
-        //
+        if ($activity->itinerary->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $activity->delete();
+
+        return redirect()->back()->with('success', 'Activity deleted.');
     }
 }

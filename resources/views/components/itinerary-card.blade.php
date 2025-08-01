@@ -5,6 +5,7 @@
 <div x-data="{
         openActivityForm: false,
         openEditModal : false,
+        openDeleteModal: false,
         activity      : {}        // currently-edited activity
     }" class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 space-y-4">
     <!-- ── Title & Info ─────────────────────────────────────────────── -->
@@ -22,11 +23,22 @@
         <div class="mt-2 flex items-center gap-2 text-sm">
             <a href="{{ route('itineraries.edit', $itinerary->id) }}" class="text-primary hover:underline">Edit</a>
 
-            <form method="POST" action="{{ route('itineraries.destroy', $itinerary->id) }}" onsubmit="return confirm('Delete this itinerary?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="text-red-600 hover:underline">Delete</button>
-            </form>
+            <button @click="openDeleteModal = true" class="text-red-600 hover:underline">Delete</button>
+            <div x-show="openDeleteModal" x-cloak x-transition.opacity.scale.80
+                class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
+                    <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Delete this itinerary?</h2>
+                    <div class="flex justify-end gap-3">
+                        <button @click="openDeleteModal = false"
+                            class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">Cancel</button>
+                        <form method="POST" action="{{ route('itineraries.destroy', $itinerary->id) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
