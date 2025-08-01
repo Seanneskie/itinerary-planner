@@ -40,7 +40,7 @@
                                 <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="text-red-600 text-xs">Delete</button>
+                                    <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">Delete</button>
                                 </form>
                             </td>
                         </tr>

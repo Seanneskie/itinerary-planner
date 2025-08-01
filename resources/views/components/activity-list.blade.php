@@ -63,18 +63,18 @@
 
             <div class="flex items-center gap-1">
                 {{-- Edit (opens modal in PARENT scope) --}}
-                <a href="#"
+                <button type="button"
                    @click.prevent.stop="
                        activity      = {{ $activity->toJson() }};
                        openEditModal = true;
                    "
-                   class="text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary-light text-xs font-medium">
+                   class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs font-medium">
                     Edit
-                </a>
+                </button>
 
                 {{-- Delete --}}
                 <button @click="openDelete = true"
-                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-xs font-medium">
+                        class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium">
                     Delete
                 </button>
                 <div x-show="openDelete" x-cloak x-transition.opacity.scale.80
