@@ -12,13 +12,22 @@ class BudgetEntryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($itinerary)
+    public function index(Request $request, $itinerary)
     {
+        $filter = $request->query('category');
+
         $itinerary = Itinerary::where('user_id', Auth::id())
-            ->with('budgetEntries')
+            ->with(['budgetEntries' => function ($query) use ($filter) {
+                $query->when($filter, fn ($q) => $q->where('category', $filter));
+            }])
             ->findOrFail($itinerary);
 
-        return view('budgets.index', compact('itinerary'));
+        $categories = BudgetEntry::where('itinerary_id', $itinerary->id)
+            ->pluck('category')
+            ->filter()
+            ->unique();
+
+        return view('budgets.index', compact('itinerary', 'categories', 'filter'));
     }
 
     /**

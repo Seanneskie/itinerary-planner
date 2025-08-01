@@ -9,6 +9,7 @@ Itinerary Planner is a web application built with **Laravel** that lets you orga
 - **Interactive map** – drop pins using [Leaflet](https://leafletjs.com/) to visualize where activities take place. The map respects light and dark themes.
 - **Dashboard overview** – view all of your itineraries and quickly add new ones.
 - **Budget tracking** – record expenses for each itinerary, view totals and charts.
+- **Category filtering** – filter budget entries by category to refine reports.
 
 ## Requirements
 - PHP 8.2 or higher
@@ -51,6 +52,7 @@ composer test
 
 ## Budget Tracking
 Each itinerary has a budget page where you can log expenses. Entries can be edited or deleted, and the page displays the total spent along with helpful charts.
+You can also filter entries by category to focus on specific types of spending.
 
 ## Contributing
 Feel free to open issues or submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
