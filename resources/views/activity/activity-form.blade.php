@@ -84,17 +84,26 @@
                         }).addTo(map);
 
                         let marker;
+                        const updateInputs = ({ lat, lng }) => {
+                            $refs.lat.value = lat.toFixed(7);
+                            $refs.lng.value = lng.toFixed(7);
+                        };
+
                         if ($refs.lat.value && $refs.lng.value) {
-                            marker = L.marker([lat, lng]).addTo(map);
+                            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                            marker.on('dragend', e => updateInputs(e.target.getLatLng()));
                         }
 
                         map.on('click', ({ latlng }) => {
                             const { lat: lt, lng: lg } = latlng;
-                            $refs.lat.value = lt.toFixed(7);
-                            $refs.lng.value = lg.toFixed(7);
+                            updateInputs({ lat: lt, lng: lg });
 
-                            if (marker) marker.setLatLng(latlng);
-                            else        marker = L.marker(latlng).addTo(map);
+                            if (marker) {
+                                marker.setLatLng(latlng);
+                            } else {
+                                marker = L.marker(latlng, { draggable: true }).addTo(map);
+                                marker.on('dragend', e => updateInputs(e.target.getLatLng()));
+                            }
                         });
 
                         /* watch: recenter when a different activity is loaded */
@@ -103,10 +112,13 @@
                             const lt = parseFloat(activity.latitude  || 6.11);
                             const lg = parseFloat(activity.longitude || 125.17);
                             map.setView([lt, lg], 13);
-                            if (marker) marker.setLatLng([lt, lg]);
-                            else        marker = L.marker([lt, lg]).addTo(map);
-                            $refs.lat.value = lt.toFixed(7);
-                            $refs.lng.value = lg.toFixed(7);
+                            if (marker) {
+                                marker.setLatLng([lt, lg]);
+                            } else {
+                                marker = L.marker([lt, lg], { draggable: true }).addTo(map);
+                                marker.on('dragend', e => updateInputs(e.target.getLatLng()));
+                            }
+                            updateInputs({ lat: lt, lng: lg });
                         });
 
                         $watch('openActivityForm', value => { if (value) setTimeout(() => map.invalidateSize(), 0); });
