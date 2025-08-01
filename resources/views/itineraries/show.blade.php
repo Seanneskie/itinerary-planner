@@ -32,12 +32,21 @@
                     </tbody>
                 </table>
                 <x-budget-chart :entries="$itinerary->budgetEntries" />
+                <x-budget-category-chart :entries="$itinerary->budgetEntries" />
+                @php
+                    $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('amount');
+                    $topCategory = $categoryTotals->sortDesc()->keys()->first();
+                @endphp
+                <p class="text-sm text-gray-600 dark:text-gray-300 mt-4">
+                    Top spending category: {{ $topCategory }} (${{ number_format($categoryTotals[$topCategory], 2) }})
+                </p>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mt-4">
                     Total: ${{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}
                 </p>
                 @if($averageBudget)
                     <p class="text-sm text-gray-600 dark:text-gray-300">
                         Average budget for itineraries with activities in {{ $primaryLocation }}: ${{ number_format($averageBudget, 2) }}
+                        ({{ round(($itinerary->budgetEntries->sum('amount') - $averageBudget) / $averageBudget * 100, 1) }}% {{ $itinerary->budgetEntries->sum('amount') >= $averageBudget ? 'above' : 'below' }} average)
                     </p>
                 @endif
             @else
