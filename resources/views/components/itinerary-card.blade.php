@@ -16,9 +16,15 @@
         <p class="text-sm text-gray-600 dark:text-gray-300">
             {{ $itinerary->description }}
         </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ $itinerary->start_date }} to {{ $itinerary->end_date }}
-        </p>
+    <p class="text-sm text-gray-500 dark:text-gray-400">
+        {{ $itinerary->start_date }} to {{ $itinerary->end_date }}
+    </p>
+
+    @if($itinerary->groupMembers->count())
+        <x-group-member-list :members="$itinerary->groupMembers" />
+    @endif
+
+    @include('group-member.form', ['itinerary' => $itinerary])
 
         <div class="mt-2 flex items-center gap-2 text-sm">
             <a href="{{ route('itineraries.edit', $itinerary->id) }}" class="text-primary hover:underline">Edit</a>

@@ -56,6 +56,33 @@
                               ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
 
+            <!-- Budget -->
+            <div class="flex flex-col space-y-1">
+                <label class="font-medium text-gray-700 dark:text-gray-300">Budget</label>
+                <input type="number" step="0.01" name="budget"
+                       x-model="activity.budget"
+                       class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
+                              ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
+            </div>
+
+            <!-- Attire color -->
+            <div class="flex flex-col space-y-1">
+                <label class="font-medium text-gray-700 dark:text-gray-300">Attire Color</label>
+                <input type="text" name="attire_color"
+                       x-model="activity.attire_color"
+                       class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
+                              ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
+            </div>
+
+            <!-- Attire note -->
+            <div class="flex flex-col space-y-1">
+                <label class="font-medium text-gray-700 dark:text-gray-300">Attire Notes</label>
+                <input type="text" name="attire_note"
+                       x-model="activity.attire_note"
+                       class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
+                              ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
+            </div>
+
             <!-- Map selector -->
             <div class="sm:col-span-2 space-y-2">
                 <label class="font-medium text-gray-700 dark:text-gray-300">Drop a pin</label>

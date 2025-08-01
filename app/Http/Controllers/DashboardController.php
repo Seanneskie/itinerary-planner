@@ -9,7 +9,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Itinerary::with('activities')
+        $query = Itinerary::with(['activities', 'groupMembers'])
             ->where('user_id', auth()->id());
 
         if ($request->filled('search')) {
