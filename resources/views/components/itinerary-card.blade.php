@@ -55,6 +55,7 @@
                 </div>
             </div>
         @endif
+    </div>
 
     @if($itinerary->groupMembers->count())
         <x-group-member-list :members="$itinerary->groupMembers" />
@@ -80,8 +81,6 @@
             </div>
         </div>
     </div>
-
-        </div>
 
     <!-- ── Activities List ──────────────────────────────────────────── -->
     @if($itinerary->activities->count())
