@@ -2,7 +2,7 @@
     <!-- Animated Icon / Logo -->
     <div class="flex justify-center mb-8">
         <img src="https://laravel.com/img/logomark.min.svg"
-             alt="Laravel Logo"
+             alt="Itinerary Planner Logo"
              class="h-16 w-16 animate-pulse dark:invert"
         >
     </div>
