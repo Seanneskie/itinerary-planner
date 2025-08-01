@@ -18,6 +18,16 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ $itinerary->start_date }} to {{ $itinerary->end_date }}
         </p>
+
+        <div class="mt-2 flex items-center gap-2 text-sm">
+            <a href="{{ route('itineraries.edit', $itinerary->id) }}" class="text-indigo-600 hover:underline">Edit</a>
+
+            <form method="POST" action="{{ route('itineraries.destroy', $itinerary->id) }}" onsubmit="return confirm('Delete this itinerary?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="text-red-600 hover:underline">Delete</button>
+            </form>
+        </div>
     </div>
 
     <!-- ── Activities List ──────────────────────────────────────────── -->
@@ -54,33 +64,5 @@
         <x-itinerary-map :activities="$itinerary->activities" />
     </div>
 
-    <!-- ── Leaflet “drop-pin” helper (only used by add-form) ────────── -->
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.effect(() => {
-                Alpine.nextTick(() => {
-                    const mapContainer = document.getElementById('drop-pin-map');
-                    if (mapContainer && !mapContainer.dataset.mapInitialized) {
-                        mapContainer.dataset.mapInitialized = true;
-
-                        const map = L.map('drop-pin-map').setView([6.11, 125.17], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '&copy; OpenStreetMap contributors'
-                        }).addTo(map);
-
-                        let marker;
-                        map.on('click', e => {
-                            const { lat, lng } = e.latlng;
-                            document.getElementById('latitude').value = lat.toFixed(7);
-                            document.getElementById('longitude').value = lng.toFixed(7);
-
-                            if (marker) marker.setLatLng(e.latlng);
-                            else marker = L.marker(e.latlng).addTo(map);
-                        });
-                    }
-                });
-            });
-        });
-    </script>
 </div>
+
