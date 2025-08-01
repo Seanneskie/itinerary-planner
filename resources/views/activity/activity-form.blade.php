@@ -71,6 +71,8 @@
                         const lng = parseFloat(($refs.lng.value || 125.17));
 
                         const map = L.map($el).setView([lat, lng], 13);
+                        // ensure proper sizing when modal becomes visible
+                        setTimeout(() => map.invalidateSize(), 0);
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '© OpenStreetMap contributors'
                         }).addTo(map);
@@ -100,6 +102,9 @@
                             $refs.lat.value = lt.toFixed(7);
                             $refs.lng.value = lg.toFixed(7);
                         });
+
+                        $watch('openActivityForm', value => { if (value) setTimeout(() => map.invalidateSize(), 0); });
+                        $watch('openEditModal',   value => { if (value) setTimeout(() => map.invalidateSize(), 0); });
 
                         $el.dataset.loaded = true;
                      }"
