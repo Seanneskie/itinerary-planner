@@ -24,6 +24,11 @@ class Itinerary extends Model
         return $this->hasMany(GroupMember::class);
     }
 
+    public function budgetEntries()
+    {
+        return $this->hasMany(BudgetEntry::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
