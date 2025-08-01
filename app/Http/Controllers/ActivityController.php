@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Itinerary;
 class ActivityController extends Controller
 {
     protected $fillable = ['title', 'note', 'scheduled_at', 'location', 'latitude', 'longitude', 'itinerary_id'];
@@ -30,12 +31,15 @@ class ActivityController extends Controller
      */
     public function store(Request $request)
     {
+        $itinerary = Itinerary::where('user_id', Auth::id())
+            ->findOrFail($request->itinerary_id);
+
         $request->validate([
             'itinerary_id' => 'required|exists:itineraries,id',
             'title' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'note' => 'nullable|string',
-            'scheduled_at' => 'required|date',
+            'scheduled_at' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
@@ -74,10 +78,16 @@ class ActivityController extends Controller
      */
     public function update(Request $request, Activity $activity)
     {
+        if ($activity->itinerary->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $itinerary = $activity->itinerary;
+
         $validated = $request->validate([
             'title'        => 'required|string|max:255',
             'location'     => 'nullable|string|max:255',
-            'scheduled_at' => 'required|date',
+            'scheduled_at' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
             'note'         => 'nullable|string',
             'latitude'     => 'nullable|numeric',
             'longitude'    => 'nullable|numeric',
