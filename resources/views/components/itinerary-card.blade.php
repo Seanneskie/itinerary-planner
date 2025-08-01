@@ -61,13 +61,14 @@
     @endif
 
     <!-- ── Add-Activity Button ──────────────────────────────────────── -->
-    <div>
+    <div class="flex gap-2">
         <button @click="
         activity = {};           /* blank object for new record */
         openActivityForm = true
     " class="px-3 py-1 bg-primary hover:bg-primary-dark text-white text-sm rounded">
             + Add Activity
         </button>
+        <a href="{{ route('itineraries.budgets.index', $itinerary->id) }}" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded">Budget</a>
     </div>
 
     <!-- ── Add-Activity Modal ───────────────────────────────────────── -->
