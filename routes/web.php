@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/itineraries', [ItineraryController::class, 'store'])->name('itineraries.store');
     // web.php
     Route::post('/activities', [ActivityController::class, 'store'])->name('activities.store');
-
+    Route::resource('activities', controller: ActivityController::class);
 });
+
 require __DIR__.'/auth.php';

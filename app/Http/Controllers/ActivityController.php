@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Activity;
 class ActivityController extends Controller
 {
+    protected $fillable = ['title', 'note', 'scheduled_at', 'location', 'latitude', 'longitude', 'itinerary_id'];
+
     /**
      * Display a listing of the resource.
      */
@@ -69,9 +71,18 @@ class ActivityController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Activity $activity)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'scheduled_at' => 'required|date',
+            'note' => 'nullable|string',
+        ]);
+
+        $activity->update($validated);
+
+        return redirect()->back()->with('success', 'Activity updated successfully!');
     }
 
     /**
