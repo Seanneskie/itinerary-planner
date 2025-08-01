@@ -33,20 +33,25 @@
                     @foreach($itinerary->budgetEntries as $entry)
                         <tr>
                             <td class="py-2">{{ $entry->description }}</td>
-                            <td class="py-2">${{ number_format($entry->amount,2) }}</td>
+                            <td class="py-2">${{ number_format($entry->amount, 2) }}</td>
                             <td class="py-2">{{ $entry->entry_date }}</td>
                             <td class="py-2">{{ $entry->category }}</td>
                             <td class="py-2 text-right">
-                                <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">Delete</button>
-                                </form>
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('budgets.edit', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-xs">Edit</a>
+                                    <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">Delete</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
+            <p class="text-right font-semibold mt-2">Total Spent: ${{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}</p>
 
             <x-budget-chart :entries="$itinerary->budgetEntries" />
         @else
