@@ -37,6 +37,19 @@
                     {{ $activity->note }}
                 </p>
             @endif
+            @if ($activity->budget)
+                <p class="text-xs text-gray-500 dark:text-gray-400">Budget: ${{ number_format($activity->budget, 2) }}</p>
+            @endif
+            @if ($activity->attire_color || $activity->attire_note)
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    @if($activity->attire_color)
+                        Color: {{ $activity->attire_color }}
+                    @endif
+                    @if($activity->attire_note)
+                        • {{ $activity->attire_note }}
+                    @endif
+                </p>
+            @endif
         </div>
 
         {{-- Duration & actions --}}

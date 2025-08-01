@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GroupMemberController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('itineraries', ItineraryController::class);
     Route::resource('itineraries.activities', ActivityController::class)->shallow();
+    Route::resource('itineraries.group-members', GroupMemberController::class)->shallow()->only(['store','update','destroy']);
 });
 
 Route::middleware(['auth'])->group(function () {
