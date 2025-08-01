@@ -1,5 +1,5 @@
 @props(['itinerary'])
-<form method="POST" action="{{ route('group-members.store') }}" class="space-y-2">
+<form method="POST" action="{{ route('itineraries.group-members.store', $itinerary->id) }}" class="space-y-2">
     @csrf
     <input type="hidden" name="itinerary_id" value="{{ $itinerary->id }}">
     <div>
