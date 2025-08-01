@@ -18,6 +18,11 @@
                 </div>
             </div>
 
+            <!-- Theme Toggle -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <x-theme-toggle />
+            </div>
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -70,6 +75,9 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <div class="px-4 pt-2">
+                <x-theme-toggle />
+            </div>
         </div>
 
         <!-- Responsive Settings Options -->

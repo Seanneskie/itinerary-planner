@@ -69,36 +69,5 @@
         @endforeach
     </div>
 
-    {{-- Leaflet Map --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            @foreach ($itineraries as $itinerary)
-                const coords{{ $itinerary->id }} = {!! json_encode($itinerary->coordinates ?? []) !!};
-                if (coords{{ $itinerary->id }}.length > 0) {
-                    const map = L.map('map-itinerary-{{ $itinerary->id }}').setView(
-                        [coords{{ $itinerary->id }}[0].lat, coords{{ $itinerary->id }}[0].lng], 13);
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OpenStreetMap contributors'
-                    }).addTo(map);
-
-                    const latlngs = [];
-
-                    coords{{ $itinerary->id }}.forEach(point => {
-                        L.marker([point.lat, point.lng])
-                            .addTo(map)
-                            .bindPopup(`<strong>${point.title}</strong><br>${point.location}`);
-                        latlngs.push([point.lat, point.lng]);
-                    });
-
-                    // Draw path line
-                    L.polyline(latlngs, { color: 'blue' }).addTo(map);
-                    map.fitBounds(L.polyline(latlngs).getBounds());
-                }
-            @endforeach
-    });
-    </script>
 
 </x-app-layout>
