@@ -47,9 +47,15 @@
     </div>
 
         <div class="mt-2 flex items-center gap-2 text-sm">
-            <a href="{{ route('itineraries.edit', $itinerary->id) }}" class="text-primary hover:underline">Edit</a>
+            <a href="{{ route('itineraries.edit', $itinerary->id) }}"
+               class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs">
+                Edit
+            </a>
 
-            <button @click="openDeleteModal = true" class="text-red-600 hover:underline">Delete</button>
+            <button @click="openDeleteModal = true"
+                class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">
+                Delete
+            </button>
             <div x-show="openDeleteModal" x-cloak x-transition.opacity.scale.80
                 class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">

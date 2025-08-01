@@ -9,8 +9,14 @@
                 @endif
             </div>
             <div class="flex items-center gap-2">
-                <a href="#" @click.prevent="openEdit = true" class="text-primary text-xs">Edit</a>
-                <button @click="openDelete = true" class="text-red-600 text-xs">Delete</button>
+                <button @click.prevent="openEdit = true"
+                    class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs">
+                    Edit
+                </button>
+                <button @click="openDelete = true"
+                    class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">
+                    Delete
+                </button>
             </div>
 
             <div x-show="openEdit" x-cloak x-transition.opacity.scale.80 class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
