@@ -62,11 +62,36 @@
         </div>
     </x-slot>
 
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
+        <form method="GET" class="flex flex-wrap items-end gap-4">
+            <div>
+                <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Search</label>
+                <input type="text" id="search" name="search" value="{{ request('search') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:text-white" />
+            </div>
+            <div>
+                <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200">From</label>
+                <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:text-white" />
+            </div>
+            <div>
+                <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200">To</label>
+                <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:text-white" />
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded">Filter</button>
+                <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">Clear</a>
+            </div>
+        </form>
+    </div>
+
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
         @foreach ($itineraries as $itinerary)
             <x-itinerary-card :itinerary="$itinerary" />
 
         @endforeach
+        {{ $itineraries->links() }}
     </div>
 
 
