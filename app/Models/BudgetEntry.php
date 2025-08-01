@@ -14,6 +14,17 @@ class BudgetEntry extends Model
         'category',
     ];
 
+    /**
+     * Cast attributes to common types.
+     */
+    protected function casts(): array
+    {
+        return [
+            'entry_date' => 'date',
+            'amount' => 'float',
+        ];
+    }
+
     public function itinerary()
     {
         return $this->belongsTo(Itinerary::class);
