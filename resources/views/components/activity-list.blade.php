@@ -9,6 +9,7 @@
     class="mt-4 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
 @foreach ($sorted as $index => $activity)
     <li
+        x-data="{ openDelete: false }"
         class="pt-3 first:pt-0 grid grid-cols-[auto_1fr_auto] gap-3
                hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-md px-3 py-2 transition"
         data-marker-id="marker-{{ $activity->id }}"
@@ -59,15 +60,25 @@
                 </a>
 
                 {{-- Delete --}}
-                <form method="POST" action="{{ route('activities.destroy', $activity->id) }}"
-                      onsubmit="return confirm('Delete this activity?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-xs font-medium">
-                        Delete
-                    </button>
-                </form>
+                <button @click="openDelete = true"
+                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-xs font-medium">
+                    Delete
+                </button>
+                <div x-show="openDelete" x-cloak x-transition.opacity.scale.80
+                     class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
+                        <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Delete this activity?</h2>
+                        <div class="flex justify-end gap-3">
+                            <button @click="openDelete = false"
+                                    class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">Cancel</button>
+                            <form method="POST" action="{{ route('activities.destroy', $activity->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </li>
