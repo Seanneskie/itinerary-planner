@@ -67,8 +67,14 @@
                         if ($el.dataset.loaded) return;
 
                         /* centre map on existing coords or default */
-                        const lat = parseFloat(($refs.lat.value || 6.11));
-                        const lng = parseFloat(($refs.lng.value || 125.17));
+                        const defaultLat = 6.11;
+                        const defaultLng = 125.17;
+                        const lat = parseFloat(($refs.lat.value || defaultLat));
+                        const lng = parseFloat(($refs.lng.value || defaultLng));
+
+                        // populate empty inputs with default coordinates
+                        if (!$refs.lat.value) $refs.lat.value = lat.toFixed(7);
+                        if (!$refs.lng.value) $refs.lng.value = lng.toFixed(7);
 
                         const map = L.map($el).setView([lat, lng], 13);
                         // ensure proper sizing when modal becomes visible
