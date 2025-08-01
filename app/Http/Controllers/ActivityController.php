@@ -74,10 +74,12 @@ class ActivityController extends Controller
     public function update(Request $request, Activity $activity)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'title'        => 'required|string|max:255',
+            'location'     => 'nullable|string|max:255',
             'scheduled_at' => 'required|date',
-            'note' => 'nullable|string',
+            'note'         => 'nullable|string',
+            'latitude'     => 'nullable|numeric',
+            'longitude'    => 'nullable|numeric',
         ]);
 
         $activity->update($validated);
