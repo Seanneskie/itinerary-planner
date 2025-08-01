@@ -18,6 +18,18 @@
             </div>
         </form>
 
+        @if($categories->count())
+            <form method="GET" class="text-right">
+                <label class="mr-2 text-sm text-gray-700 dark:text-gray-300" for="category-filter">Filter:</label>
+                <select id="category-filter" name="category" onchange="this.form.submit()" class="px-2 py-1 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category }}" @selected($category === $filter)>{{ $category }}</option>
+                    @endforeach
+                </select>
+            </form>
+        @endif
+
         @if($itinerary->budgetEntries->count())
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
@@ -53,7 +65,10 @@
 
             <p class="text-right font-semibold mt-2">Total Spent: ${{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}</p>
 
-            <x-budget-chart :entries="$itinerary->budgetEntries" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <x-budget-chart :entries="$itinerary->budgetEntries" />
+                <x-budget-category-chart :entries="$itinerary->budgetEntries" />
+            </div>
         @else
             <p class="text-gray-500 dark:text-gray-400">No budget entries yet.</p>
         @endif
