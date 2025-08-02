@@ -10,7 +10,7 @@
     $end = $itinerary->end_date->toDateString();
 @endphp
 
-<div x-data="weatherForecast('{{$start}}','{{$end}}', @json($pins))" class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
+<div x-data='weatherForecast("{{$start}}","{{$end}}", @json($pins))' class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
     <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Weather Forecast</h3>
     <template x-if="error">
         <p class="text-sm text-red-600" x-text="error"></p>
