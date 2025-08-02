@@ -15,7 +15,7 @@ class ItineraryController extends Controller
      */
     public function index()
     {
-        $itineraries = Itinerary::with(['activities', 'groupMembers'])
+        $itineraries = Itinerary::with(['activities', 'groupMembers', 'bookings'])
             ->where('user_id', Auth::id())
             ->get();
 
@@ -59,7 +59,7 @@ class ItineraryController extends Controller
      */
     public function show(string $id)
     {
-        $itinerary = Itinerary::with(['activities', 'groupMembers', 'budgetEntries'])
+        $itinerary = Itinerary::with(['activities', 'groupMembers', 'budgetEntries', 'bookings'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
