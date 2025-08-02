@@ -49,37 +49,43 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2">
                     <h3 class="text-lg font-semibold mb-3">Budget Entries</h3>
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead>
-                            <tr class="text-left">
-                                <th class="py-2">Description</th>
-                                <th class="py-2">Budgeted</th>
-                                <th class="py-2">Spent</th>
-                                <th class="py-2">Date</th>
-                                <th class="py-2">Category</th>
-                                <th></th>
+                    <table class="min-w-full overflow-hidden rounded-lg shadow divide-y divide-gray-300 dark:divide-gray-700 text-sm">
+                        <thead class="bg-gray-100 dark:bg-gray-700">
+                            <tr class="text-left text-gray-700 dark:text-gray-200">
+                                <th class="px-4 py-2 font-semibold uppercase tracking-wider">Description</th>
+                                <th class="px-4 py-2 font-semibold uppercase tracking-wider">Budgeted</th>
+                                <th class="px-4 py-2 font-semibold uppercase tracking-wider">Spent</th>
+                                <th class="px-4 py-2 font-semibold uppercase tracking-wider">Date</th>
+                                <th class="px-4 py-2"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach($itinerary->budgetEntries as $entry)
-                                <tr>
-                                    <td class="py-2">{{ $entry->description }}</td>
-                                    <td class="py-2">PHP{{ number_format($entry->amount, 2) }}</td>
-                                    <td class="py-2">PHP{{ number_format($entry->spent_amount, 2) }}</td>
-                                    <td class="py-2">{{ $entry->entry_date }}</td>
-                                    <td class="py-2">{{ $entry->category }}</td>
-                                    <td class="py-2 text-right">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('budgets.edit', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-xs">Edit</a>
-                                            <a href="{{ route('budgets.edit-spent', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs">Update Spent</a>
-                                            <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">Delete</button>
-                                            </form>
-                                        </div>
-                                    </td>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            @php
+                                $groupedEntries = $itinerary->budgetEntries->sortBy('category')->groupBy('category');
+                            @endphp
+                            @foreach($groupedEntries as $category => $entries)
+                                <tr class="bg-gray-200 dark:bg-gray-900">
+                                    <th colspan="5" class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">{{ $category ?: 'Uncategorized' }}</th>
                                 </tr>
+                                @foreach($entries as $entry)
+                                    <tr class="odd:bg-white odd:dark:bg-gray-800 even:bg-gray-50 even:dark:bg-gray-700">
+                                        <td class="px-4 py-2">{{ $entry->description }}</td>
+                                        <td class="px-4 py-2 text-right">PHP{{ number_format($entry->amount, 2) }}</td>
+                                        <td class="px-4 py-2 text-right">PHP{{ number_format($entry->spent_amount, 2) }}</td>
+                                        <td class="px-4 py-2">{{ $entry->entry_date }}</td>
+                                        <td class="px-4 py-2 text-right">
+                                            <div class="flex items-center justify-end gap-2">
+                                                <a href="{{ route('budgets.edit', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-xs">Edit</a>
+                                                <a href="{{ route('budgets.edit-spent', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs">Update Spent</a>
+                                                <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             @endforeach
                         </tbody>
                     </table>
