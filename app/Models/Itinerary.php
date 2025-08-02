@@ -12,6 +12,7 @@ class Itinerary extends Model
         'description',
         'start_date',
         'end_date',
+        'photo_path',
     ];
 
     public function activities()

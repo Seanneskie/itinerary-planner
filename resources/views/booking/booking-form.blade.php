@@ -17,7 +17,7 @@
         <input type="hidden" name="itinerary_id" :value="booking.itinerary_id ?? '{{ $itinerary->id }}'">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex flex-col space-y-1">
-                <label class="font-medium text-gray-700 dark:text-gray-300">Place</label>
+                <label class="font-medium text-gray-700 dark:text-gray-300">Place <span class="text-red-500">*</span></label>
                 <input type="text" name="place" x-model="booking.place" required class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
             <div class="flex flex-col space-y-1">
@@ -25,11 +25,11 @@
                 <input type="text" name="location" x-model="booking.location" class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
             <div class="flex flex-col space-y-1">
-                <label class="font-medium text-gray-700 dark:text-gray-300">Check-in</label>
+                <label class="font-medium text-gray-700 dark:text-gray-300">Check-in <span class="text-red-500">*</span></label>
                 <input type="date" name="check_in" x-model="booking.check_in" required class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
             <div class="flex flex-col space-y-1">
-                <label class="font-medium text-gray-700 dark:text-gray-300">Check-out</label>
+                <label class="font-medium text-gray-700 dark:text-gray-300">Check-out <span class="text-red-500">*</span></label>
                 <input type="date" name="check_out" x-model="booking.check_out" required class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
             <div class="sm:col-span-2 space-y-2">
@@ -92,3 +92,4 @@
         </div>
     </form>
 </div>
+

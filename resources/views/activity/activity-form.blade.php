@@ -40,7 +40,7 @@
 
             <!-- Title -->
             <div class="flex flex-col space-y-1">
-                <label class="font-medium text-gray-700 dark:text-gray-300">Title</label>
+                <label class="font-medium text-gray-700 dark:text-gray-300">Title <span class="text-red-500">*</span></label>
                 <input type="text" name="title" required
                        x-model="activity.title"
                        class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
@@ -168,7 +168,7 @@
 
             <!-- Date & time -->
             <div class="flex flex-col space-y-1">
-                <label class="font-medium text-gray-700 dark:text-gray-300">Date &amp; time</label>
+                <label class="font-medium text-gray-700 dark:text-gray-300">Date &amp; time <span class="text-red-500">*</span></label>
                 <input type="datetime-local" name="scheduled_at" required
                        x-model="activity.scheduled_at"
                        class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
@@ -200,3 +200,4 @@
         </div>
     </form>
 </div>
+

@@ -22,11 +22,20 @@
             <div x-show="openEdit" x-cloak x-transition.opacity.scale.80 class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
                 <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
                     <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Edit Member</h2>
-                    <form method="POST" action="{{ route('group-members.update', $member->id) }}" class="space-y-2">
+                    <form method="POST" action="{{ route('group-members.update', $member->id) }}" class="space-y-2" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <input type="text" name="name" value="{{ $member->name }}" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
-                        <input type="text" name="notes" value="{{ $member->notes }}" class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
+                        <div>
+                            <label for="member-name-{{ $member->id }}" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="member-name-{{ $member->id }}" name="name" value="{{ $member->name }}" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
+                        </div>
+                        <div>
+                            <input type="text" name="notes" value="{{ $member->notes }}" class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
+                        </div>
+                        <div>
+                            <label for="member-photo-{{ $member->id }}" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Photo</label>
+                            <input type="file" id="member-photo-{{ $member->id }}" name="photo" class="w-full text-gray-900 dark:text-white">
+                        </div>
                         <div class="text-right">
                             <button class="px-3 py-1 bg-primary hover:bg-primary-dark text-white rounded text-sm">Update</button>
                         </div>

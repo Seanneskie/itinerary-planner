@@ -56,15 +56,22 @@ class ItineraryController extends Controller
             'description' => 'nullable|string',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
-        Itinerary::create([
+        $data = [
             'user_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-        ]);
+        ];
+
+        if ($request->hasFile('photo')) {
+            $data['photo_path'] = $request->file('photo')->store('itineraries', 'public');
+        }
+
+        Itinerary::create($data);
 
         return redirect()->route('dashboard')->with('success', 'Itinerary created.');
     }
@@ -115,7 +122,12 @@ class ItineraryController extends Controller
             'description' => 'nullable|string',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
+            'photo' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_path'] = $request->file('photo')->store('itineraries', 'public');
+        }
 
         $itinerary->update($validated);
 
