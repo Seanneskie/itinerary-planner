@@ -7,8 +7,8 @@ use App\Models\Itinerary;
 use App\Models\BudgetEntry;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\ItineraryExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel as ExcelFacade;
+use Barryvdh\DomPDF\Facade\Pdf as PdfFacade;
 
 
 class ItineraryController extends Controller
@@ -156,7 +156,7 @@ class ItineraryController extends Controller
 
         $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
 
-        return Excel::download(new ItineraryExport($itinerary), 'itinerary.xlsx');
+        return ExcelFacade::download(new ItineraryExport($itinerary), 'itinerary.xlsx');
     }
 
     public function exportPdf(Itinerary $itinerary)
@@ -167,7 +167,7 @@ class ItineraryController extends Controller
 
         $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
 
-        $pdf = Pdf::loadView('itineraries.export', [
+        $pdf = PdfFacade::loadView('itineraries.export', [
             'itinerary' => $itinerary,
         ]);
 
