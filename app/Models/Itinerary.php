@@ -15,6 +15,17 @@ class Itinerary extends Model
         'photo_path',
     ];
 
+    /**
+     * Cast attributes to common types.
+     */
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+        ];
+    }
+
     public function activities()
     {
         return $this->hasMany(Activity::class);

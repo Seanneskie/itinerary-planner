@@ -23,13 +23,13 @@
 
             <div class="mb-4">
                 <label for="start_date" class="block font-medium text-sm text-gray-700 dark:text-gray-200">Start Date <span class="text-red-500">*</span></label>
-                <input type="date" name="start_date" id="start_date" required value="{{ old('start_date', $itinerary->start_date) }}"
+                <input type="date" name="start_date" id="start_date" required value="{{ old('start_date', $itinerary->start_date?->format('Y-m-d')) }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900 dark:text-white" />
             </div>
 
             <div class="mb-4">
                 <label for="end_date" class="block font-medium text-sm text-gray-700 dark:text-gray-200">End Date <span class="text-red-500">*</span></label>
-            <input type="date" name="end_date" id="end_date" required value="{{ old('end_date', $itinerary->end_date) }}"
+            <input type="date" name="end_date" id="end_date" required value="{{ old('end_date', $itinerary->end_date?->format('Y-m-d')) }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900 dark:text-white" />
             </div>
 

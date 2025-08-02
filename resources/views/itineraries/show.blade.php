@@ -14,24 +14,24 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
                         <h4 class="text-md font-semibold mb-2">Entries</h4>
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mb-4">
-                            <thead>
-                                <tr class="text-left">
-                                    <th class="py-2">Description</th>
-                                    <th class="py-2">Budgeted</th>
-                                    <th class="py-2">Spent</th>
-                                    <th class="py-2">Date</th>
-                                    <th class="py-2">Category</th>
+                        <table class="min-w-full mb-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                            <thead class="bg-gray-50 dark:bg-gray-900">
+                                <tr class="text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <th class="py-2 px-3">Description</th>
+                                    <th class="py-2 px-3 text-right">Budgeted</th>
+                                    <th class="py-2 px-3 text-right">Spent</th>
+                                    <th class="py-2 px-3">Date</th>
+                                    <th class="py-2 px-3">Category</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-600 dark:text-gray-300">
                                 @foreach($itinerary->budgetEntries as $entry)
-                                    <tr>
-                                        <td class="py-2">{{ $entry->description }}</td>
-                                        <td class="py-2">PHP{{ number_format($entry->amount, 2) }}</td>
-                                        <td class="py-2">PHP{{ number_format($entry->spent_amount, 2) }}</td>
-                                        <td class="py-2">{{ $entry->entry_date }}</td>
-                                        <td class="py-2">{{ $entry->category }}</td>
+                                    <tr class="{{ $loop->even ? 'bg-gray-50 dark:bg-gray-900' : '' }}">
+                                        <td class="py-2 px-3">{{ $entry->description }}</td>
+                                        <td class="py-2 px-3 text-right">PHP{{ number_format($entry->amount, 2) }}</td>
+                                        <td class="py-2 px-3 text-right">PHP{{ number_format($entry->spent_amount, 2) }}</td>
+                                        <td class="py-2 px-3">{{ $entry->entry_date->format('M j, Y') }}</td>
+                                        <td class="py-2 px-3">{{ $entry->category }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -51,6 +51,7 @@
                 @php
                     $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('spent_amount');
                     $topCategory = $categoryTotals->sortDesc()->keys()->first();
+                    $totalBudget = $itinerary->budgetEntries->sum('amount');
                     $totalSpent = $itinerary->budgetEntries->sum('spent_amount');
                 @endphp
                 <div class="mt-6">
@@ -76,7 +77,8 @@
                 </div>
                 <div class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-300">
                     <p>Top spending category: {{ $topCategory }} (PHP{{ number_format($categoryTotals[$topCategory], 2) }})</p>
-                    <p>Total: PHP{{ number_format($totalSpent, 2) }}</p>
+                    <p>Total budget: PHP{{ number_format($totalBudget, 2) }}</p>
+                    <p>Total spent: PHP{{ number_format($totalSpent, 2) }}</p>
                     @if($averageBudget)
                         <p>
                             Average budget for itineraries with activities in {{ $primaryLocation }}: PHP{{ number_format($averageBudget, 2) }}
