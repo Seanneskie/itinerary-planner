@@ -36,22 +36,36 @@
                 @php
                     $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('amount');
                     $topCategory = $categoryTotals->sortDesc()->keys()->first();
+                    $totalSpent = $itinerary->budgetEntries->sum('amount');
                 @endphp
-                <ul class="text-sm text-gray-600 dark:text-gray-300 mt-4 space-y-1">
-                    @foreach($categoryTotals as $category => $total)
-                        <li>{{ $category }}: PHP{{ number_format($total, 2) }}</li>
-                    @endforeach
-                </ul>
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4 text-sm text-gray-600 dark:text-gray-300">
+                    <thead>
+                        <tr class="text-left">
+                            <th class="py-2">Category</th>
+                            <th class="py-2">Amount</th>
+                            <th class="py-2">Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach($categoryTotals as $category => $total)
+                            <tr @if($category === $topCategory) class="font-semibold" @endif>
+                                <td class="py-2">{{ $category }}</td>
+                                <td class="py-2">PHP{{ number_format($total, 2) }}</td>
+                                <td class="py-2">{{ round($total / $totalSpent * 100, 1) }}%</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mt-4">
                     Top spending category: {{ $topCategory }} (PHP{{ number_format($categoryTotals[$topCategory], 2) }})
                 </p>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mt-4">
-                    Total: PHP{{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}
+                    Total: PHP{{ number_format($totalSpent, 2) }}
                 </p>
                 @if($averageBudget)
                     <p class="text-sm text-gray-600 dark:text-gray-300">
                         Average budget for itineraries with activities in {{ $primaryLocation }}: PHP{{ number_format($averageBudget, 2) }}
-                        ({{ round(($itinerary->budgetEntries->sum('amount') - $averageBudget) / $averageBudget * 100, 1) }}% {{ $itinerary->budgetEntries->sum('amount') >= $averageBudget ? 'above' : 'below' }} average)
+                        ({{ round(($totalSpent - $averageBudget) / $averageBudget * 100, 1) }}% {{ $totalSpent >= $averageBudget ? 'above' : 'below' }} average)
                     </p>
                 @endif
             @else

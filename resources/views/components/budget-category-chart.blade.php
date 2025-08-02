@@ -1,6 +1,6 @@
 @props(['entries'])
 <div class="mt-6">
-    <canvas id="budget-category-chart" height="200"></canvas>
+    <canvas id="budget-category-chart" height="150"></canvas>
 </div>
 
 @push('scripts')
@@ -17,6 +17,9 @@
                     data: Object.values(data),
                     backgroundColor: ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa'],
                 }]
+            },
+            options: {
+                maintainAspectRatio: false
             }
         });
     });
