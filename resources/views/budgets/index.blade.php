@@ -62,6 +62,7 @@
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @php
                                 $groupedEntries = $itinerary->budgetEntries->sortBy('category')->groupBy('category');
+                                $totals = ['budget' => 0, 'spent' => 0];
                             @endphp
                             @foreach($groupedEntries as $category => $entries)
                                 <tr class="bg-gray-200 dark:bg-gray-900">
@@ -92,7 +93,25 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                @php
+                                    $categoryBudget = $entries->sum('amount');
+                                    $categorySpent = $entries->sum('spent_amount');
+                                    $totals['budget'] += $categoryBudget;
+                                    $totals['spent'] += $categorySpent;
+                                @endphp
+                                <tr class="bg-gray-100 dark:bg-gray-700 font-semibold">
+                                    <td class="px-4 py-2 text-right">Total</td>
+                                    <td class="px-4 py-2 text-right">PHP{{ number_format($categoryBudget, 2) }}</td>
+                                    <td class="px-4 py-2 text-right">PHP{{ number_format($categorySpent, 2) }}</td>
+                                    <td colspan="2"></td>
+                                </tr>
                             @endforeach
+                            <tr class="bg-gray-200 dark:bg-gray-900 font-bold">
+                                <td class="px-4 py-2 text-right">Grand Total</td>
+                                <td class="px-4 py-2 text-right">PHP{{ number_format($totals['budget'], 2) }}</td>
+                                <td class="px-4 py-2 text-right">PHP{{ number_format($totals['spent'], 2) }}</td>
+                                <td colspan="2"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
