@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\BudgetEntry;
 use App\Models\Itinerary;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BudgetEntryController extends Controller
@@ -48,10 +48,10 @@ class BudgetEntryController extends Controller
 
         $validated = $request->validate([
             'itinerary_id' => 'required|exists:itineraries,id',
-            'description'  => 'required|string|max:255',
-            'amount'       => 'required|numeric',
-            'entry_date'   => 'required|date',
-            'category'     => 'nullable|string|max:255',
+            'description' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'entry_date' => 'required|date',
+            'category' => 'nullable|string|max:255',
         ]);
 
         BudgetEntry::create($validated);
@@ -64,7 +64,7 @@ class BudgetEntryController extends Controller
      */
     public function show(BudgetEntry $budgetEntry)
     {
-        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
             abort(403);
         }
 
@@ -76,7 +76,7 @@ class BudgetEntryController extends Controller
      */
     public function edit(BudgetEntry $budgetEntry)
     {
-        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
             abort(403);
         }
 
@@ -88,15 +88,15 @@ class BudgetEntryController extends Controller
      */
     public function update(Request $request, BudgetEntry $budgetEntry)
     {
-        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
             abort(403);
         }
 
         $validated = $request->validate([
             'description' => 'required|string|max:255',
-            'amount'      => 'required|numeric',
-            'entry_date'  => 'required|date',
-            'category'    => 'nullable|string|max:255',
+            'amount' => 'required|numeric',
+            'entry_date' => 'required|date',
+            'category' => 'nullable|string|max:255',
         ]);
 
         $budgetEntry->update($validated);
@@ -109,7 +109,7 @@ class BudgetEntryController extends Controller
      */
     public function destroy(BudgetEntry $budgetEntry)
     {
-        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
             abort(403);
         }
 
