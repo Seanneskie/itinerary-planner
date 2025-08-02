@@ -16,7 +16,12 @@ class GroupMemberController extends Controller
             'itinerary_id' => 'required|exists:itineraries,id',
             'name' => 'required|string|max:255',
             'notes' => 'nullable|string',
+            'photo' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_path'] = $request->file('photo')->store('group_members', 'public');
+        }
 
         GroupMember::create($validated);
 
@@ -32,7 +37,12 @@ class GroupMemberController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'notes' => 'nullable|string',
+            'photo' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_path'] = $request->file('photo')->store('group_members', 'public');
+        }
 
         $groupMember->update($validated);
 

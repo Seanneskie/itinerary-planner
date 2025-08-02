@@ -9,6 +9,7 @@ class GroupMember extends Model
         'itinerary_id',
         'name',
         'notes',
+        'photo_path',
     ];
 
     public function itinerary()

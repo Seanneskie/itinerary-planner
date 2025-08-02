@@ -15,12 +15,12 @@
                     @click.away="openForm = false">
                     <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">New Itinerary</h3>
 
-                    <form method="POST" action="{{ route('itineraries.store') }}">
+                    <form method="POST" action="{{ route('itineraries.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-4">
                             <label for="title"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Title <span class="text-red-500">*</span></label>
                             <input type="text" name="title" id="title" required
                                 class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:text-white" />
                         </div>
@@ -34,16 +34,22 @@
 
                         <div class="mb-4">
                             <label for="start_date"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Start Date</label>
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Start Date <span class="text-red-500">*</span></label>
                             <input type="date" name="start_date" id="start_date" required
                                 class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:text-white" />
                         </div>
 
                         <div class="mb-4">
                             <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200">End
-                                Date</label>
+                                Date <span class="text-red-500">*</span></label>
                             <input type="date" name="end_date" id="end_date" required
                                 class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-900 dark:text-white" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="photo" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Photo</label>
+                            <input type="file" name="photo" id="photo"
+                                class="mt-1 block w-full text-gray-900 dark:text-white" />
                         </div>
 
                         <div class="flex justify-end gap-2">
