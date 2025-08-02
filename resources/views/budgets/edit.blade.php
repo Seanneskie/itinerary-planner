@@ -14,7 +14,7 @@
                 <input type="text" id="description" name="description" value="{{ old('description', $budgetEntry->description) }}" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
             </div>
             <div>
-                <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Amount <span class="text-red-500">*</span></label>
+                <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Budget Amount <span class="text-red-500">*</span></label>
                 <input type="number" step="0.01" id="amount" name="amount" value="{{ old('amount', $budgetEntry->amount) }}" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
             </div>
             <div>

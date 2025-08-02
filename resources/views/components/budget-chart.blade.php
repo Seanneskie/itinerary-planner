@@ -10,7 +10,7 @@
         const ctx = document.getElementById('budget-chart');
         const data = @json($entries->sortBy('entry_date')->map(fn($e) => [
             'date' => $e->entry_date->format('Y-m-d'),
-            'amount' => (float) $e->amount,
+            'amount' => (float) $e->spent_amount,
         ]));
 
         const colors = ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa'];
@@ -20,7 +20,7 @@
             data: {
                 labels: data.map(d => d.date),
                 datasets: [{
-                    label: 'Amount',
+                    label: 'Spent',
                     data: data.map(d => d.amount),
                     backgroundColor: data.map((_, i) => colors[i % colors.length]),
                 }]

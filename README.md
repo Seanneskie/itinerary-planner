@@ -51,7 +51,7 @@ composer test
 - `routes/web.php` – web routes for the application
 
 ## Budget Tracking
-Each itinerary has a budget page where you can log expenses. Entries can be edited or deleted, and the page displays the total spent along with helpful charts.
+Each itinerary has a budget page where you can log expenses. Entries track both budgeted and spent amounts, and a dedicated "Update Spent" action lets you adjust actual spending. The page displays the total spent along with helpful charts.
 You can also filter entries by category to focus on specific types of spending.
 
 ## Contributing
