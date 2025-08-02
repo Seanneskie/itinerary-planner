@@ -96,12 +96,8 @@
                         /* centre map on existing coords or default */
                         const defaultLat = 6.11;
                         const defaultLng = 125.17;
-                        const lat = parseFloat(($refs.lat.value || defaultLat));
-                        const lng = parseFloat(($refs.lng.value || defaultLng));
-
-                        // populate empty inputs with default coordinates
-                        if (!$refs.lat.value) $refs.lat.value = lat.toFixed(7);
-                        if (!$refs.lng.value) $refs.lng.value = lng.toFixed(7);
+                        const lat = parseFloat((activity.latitude  || defaultLat));
+                        const lng = parseFloat((activity.longitude || defaultLng));
 
                         const map = L.map($el).setView([lat, lng], 13);
                         // ensure proper sizing when modal becomes visible
@@ -112,11 +108,11 @@
 
                         let marker;
                         const updateInputs = ({ lat, lng }) => {
-                            $refs.lat.value = lat.toFixed(7);
-                            $refs.lng.value = lng.toFixed(7);
+                            activity.latitude  = lat.toFixed(7);
+                            activity.longitude = lng.toFixed(7);
                         };
 
-                        if ($refs.lat.value && $refs.lng.value) {
+                        if (activity.latitude && activity.longitude) {
                             marker = L.marker([lat, lng], { draggable: true }).addTo(map);
                             marker.on('dragend', e => updateInputs(e.target.getLatLng()));
                         }
@@ -141,7 +137,7 @@
                             map.setView([lt, lg], 13);
                             if (marker) {
                                 marker.setLatLng([lt, lg]);
-                            } else {
+                            } else if(activity.latitude && activity.longitude) {
                                 marker = L.marker([lt, lg], { draggable: true }).addTo(map);
                                 marker.on('dragend', e => updateInputs(e.target.getLatLng()));
                             }
@@ -157,11 +153,11 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 mt-2">
-                    <input type="text"  x-ref="lat" id="latitude"  name="latitude"  readonly placeholder="Lat"
-                           :value="activity.latitude"
+                    <input type="text" id="latitude" name="latitude" readonly placeholder="Lat"
+                           x-model="activity.latitude"
                            class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300">
-                    <input type="text"  x-ref="lng" id="longitude" name="longitude" readonly placeholder="Lng"
-                           :value="activity.longitude"
+                    <input type="text" id="longitude" name="longitude" readonly placeholder="Lng"
+                           x-model="activity.longitude"
                            class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300">
                 </div>
             </div>
