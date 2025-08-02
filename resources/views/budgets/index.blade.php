@@ -76,7 +76,13 @@
                                         <td class="px-4 py-2 text-right">
                                             <div class="flex items-center justify-end gap-2">
                                                 <a href="{{ route('budgets.edit', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-xs">Edit</a>
-                                                <a href="{{ route('budgets.edit-spent', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs">Update Spent</a>
+                                                <a href="{{ route('budgets.edit-spent', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs" title="Update spent">
+                                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487a2.25 2.25 0 013.181 3.182L7.5 20.212a4.5 4.5 0 01-1.687.944l-2.424.606.606-2.424a4.5 4.5 0 01.944-1.688L16.862 4.487z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 7.125L16.875 4.5" />
+                                                    </svg>
+                                                    <span class="sr-only">Update spent</span>
+                                                </a>
                                                 <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}" class="inline-block">
                                                     @csrf
                                                     @method('DELETE')
@@ -92,11 +98,15 @@
                 </div>
                 <div class="space-y-6">
                     @php
-                        $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('spent_amount');
+                        $entries = $itinerary->budgetEntries;
+                        $categoryTotals = $entries->groupBy('category')->map->sum('spent_amount');
+                        $totalBudget = $entries->sum('amount');
+                        $totalSpent = $entries->sum('spent_amount');
                     @endphp
                     <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <h4 class="font-semibold mb-2">Summary</h4>
-                        <p class="text-right font-semibold">Total Spent: PHP{{ number_format($itinerary->budgetEntries->sum('spent_amount'), 2) }}</p>
+                        <p class="text-right font-semibold">Total Budget: PHP{{ number_format($totalBudget, 2) }}</p>
+                        <p class="text-right font-semibold">Total Spent: PHP{{ number_format($totalSpent, 2) }}</p>
                         <ul class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                             @foreach($categoryTotals as $category => $total)
                                 <li>{{ $category }}: PHP{{ number_format($total, 2) }}</li>
