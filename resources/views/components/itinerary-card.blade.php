@@ -12,18 +12,26 @@
         activity      : {},
         booking       : {}
     }" class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 space-y-4">
-    <!-- ── Title & Info ─────────────────────────────────────────────── -->
+    @php
+        $photo = $itinerary->photo_path
+            ? Storage::url($itinerary->photo_path)
+            : asset('images/default-photo.svg');
+    @endphp
+    <!-- ── Title, Photo & Info ───────────────────────────────────────── -->
     <div class="flex justify-between items-start">
-        <div>
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
-                {{ $itinerary->title }}
-            </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300">
-                {{ $itinerary->description }}
-            </p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                {{ $itinerary->start_date }} to {{ $itinerary->end_date }}
-            </p>
+        <div class="flex gap-4">
+            <img src="{{ $photo }}" alt="{{ $itinerary->title }}" class="w-24 h-24 object-cover rounded-md border-2 border-gray-300 dark:border-gray-600">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+                    {{ $itinerary->title }}
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    {{ $itinerary->description }}
+                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ $itinerary->start_date }} to {{ $itinerary->end_date }}
+                </p>
+            </div>
         </div>
         @if($showActions)
             <div class="flex items-center gap-2 text-sm">

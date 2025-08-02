@@ -1,12 +1,20 @@
 @props(['members'])
 <ul class="mt-4 space-y-2">
     @foreach($members as $member)
-        <li x-data="{ openEdit: false, openDelete: false }" class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded px-3 py-2">
-            <div>
-                <p class="text-sm font-medium text-gray-800 dark:text-white">{{ $member->name }}</p>
-                @if($member->notes)
-                    <p class="text-xs text-gray-500 dark:text-gray-300">{{ $member->notes }}</p>
-                @endif
+        @php
+            $photo = $member->photo_path
+                ? Storage::url($member->photo_path)
+                : asset('images/default-photo.svg');
+        @endphp
+        <li x-data="{ openEdit: false, openDelete: false }" class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded px-3 py-2">
+            <div class="flex items-center gap-3">
+                <img src="{{ $photo }}" alt="{{ $member->name }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
+                <div>
+                    <p class="text-sm font-medium text-gray-800 dark:text-white">{{ $member->name }}</p>
+                    @if($member->notes)
+                        <p class="text-xs text-gray-500 dark:text-gray-300">{{ $member->notes }}</p>
+                    @endif
+                </div>
             </div>
             <div class="flex items-center gap-2">
                 <button @click.prevent="openEdit = true"
