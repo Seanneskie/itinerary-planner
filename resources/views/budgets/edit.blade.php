@@ -19,7 +19,7 @@
             </div>
             <div>
                 <label for="entry_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Date <span class="text-red-500">*</span></label>
-                <input type="date" id="entry_date" name="entry_date" value="{{ old('entry_date', $budgetEntry->entry_date) }}" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
+                <input type="date" id="entry_date" name="entry_date" value="{{ old('entry_date', $budgetEntry->entry_date?->format('Y-m-d')) }}" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
             </div>
             <div>
                 <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Category</label>

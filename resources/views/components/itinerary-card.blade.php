@@ -29,7 +29,7 @@
                     {{ $itinerary->description }}
                 </p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ $itinerary->start_date }} to {{ $itinerary->end_date }}
+                    {{ $itinerary->start_date->format('M j, Y') }} to {{ $itinerary->end_date->format('M j, Y') }}
                 </p>
             </div>
         </div>
@@ -50,7 +50,7 @@
                         <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-2">Confirm Delete</h2>
                         <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
                             Are you sure you want to delete <span class="font-semibold">{{ $itinerary->title }}</span>
-                            scheduled from {{ $itinerary->start_date }} to {{ $itinerary->end_date }}?
+                            scheduled from {{ $itinerary->start_date->format('M j, Y') }} to {{ $itinerary->end_date->format('M j, Y') }}?
                             This action cannot be undone.
                         </p>
                         <div class="flex justify-end gap-3">
