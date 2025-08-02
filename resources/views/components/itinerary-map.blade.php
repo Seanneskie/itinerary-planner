@@ -6,6 +6,24 @@
 <div id="{{ $mapId }}" class="h-80 w-full rounded-lg shadow"></div>
 
 @push('scripts')
+<style>
+    .map-popup .leaflet-popup-content-wrapper {
+        background-color: #ffffff;
+        color: #1f2937;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    .map-popup .leaflet-popup-tip {
+        background-color: #ffffff;
+    }
+    .dark .map-popup .leaflet-popup-content-wrapper {
+        background-color: #1f2937;
+        color: #f9fafb;
+    }
+    .dark .map-popup .leaflet-popup-tip {
+        background-color: #1f2937;
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,18 +33,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const map = L.map(@js($mapId)).setView([6.11, 125.17], 11);
     let tileLayer = L.tileLayer(isDark ? darkUrl : lightUrl, { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
 
-    const markers   = {};
-    const pathCoords = [];
+    const markers     = {};
+    const markerCoords = [];
 
     @foreach($activities->sortBy('scheduled_at') as $act)
         @if($act->latitude && $act->longitude)
             const m{{ $act->id }} = L.marker([
                 {{ $act->latitude }}, {{ $act->longitude }}
             ], { title: "{{ $act->title }}" })
-            .bindPopup(`<strong>{{ $act->title }}</strong><br>{{ $act->location ?? '' }}`)
+            .bindPopup(`
+                <div class="p-2">
+                    <h3 class="font-semibold text-gray-800 dark:text-white">{{ $act->title }}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ $act->location ?? '' }}</p>
+                </div>
+            `, { className: 'map-popup' })
             .addTo(map);
             markers['marker-{{ $act->id }}'] = m{{ $act->id }};
-            pathCoords.push([{{ $act->latitude }}, {{ $act->longitude }}]);
+            markerCoords.push([{{ $act->latitude }}, {{ $act->longitude }}]);
         @endif
     @endforeach
 
@@ -35,17 +58,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const b{{ $booking->id }} = L.marker([
                 {{ $booking->latitude }}, {{ $booking->longitude }}
             ], { title: "{{ $booking->place }}" })
-            .bindPopup(`<strong>{{ $booking->place }}</strong><br>{{ $booking->location ?? '' }}<br>Check-in: {{ $booking->check_in }}<br>Check-out: {{ $booking->check_out }}`)
+            .bindPopup(`
+                <div class="p-2">
+                    <h3 class="font-semibold text-gray-800 dark:text-white">{{ $booking->place }}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ $booking->location ?? '' }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Check-in: {{ $booking->check_in }}<br>Check-out: {{ $booking->check_out }}</p>
+                </div>
+            `, { className: 'map-popup' })
             .addTo(map);
             markers['booking-{{ $booking->id }}'] = b{{ $booking->id }};
+            markerCoords.push([{{ $booking->latitude }}, {{ $booking->longitude }}]);
         @endif
     @endforeach
 
-    if (pathCoords.length > 1){
-        const line = L.polyline(pathCoords, {color:'#2563eb'}).addTo(map);
-        map.fitBounds(line.getBounds(), {padding:[20,20]});
-    } else if (pathCoords.length === 1){
-        map.setView(pathCoords[0], 13);
+    if (markerCoords.length > 1){
+        map.fitBounds(markerCoords, {padding:[20,20]});
+    } else if (markerCoords.length === 1){
+        map.setView(markerCoords[0], 13);
     }
 
     window.highlightMarker = id => {
