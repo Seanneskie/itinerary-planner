@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Itinerary;
 class ActivityController extends Controller
 {
-    protected $fillable = ['title', 'note', 'scheduled_at', 'location', 'latitude', 'longitude', 'itinerary_id'];
+    protected $fillable = ['title', 'note', 'scheduled_at', 'location', 'latitude', 'longitude', 'photo_path', 'itinerary_id'];
 
     /**
      * Display a listing of the resource.
@@ -45,9 +45,10 @@ class ActivityController extends Controller
             'scheduled_at' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
-        Activity::create([
+        $data = [
             'itinerary_id' => $request->itinerary_id,
             'title' => $request->title,
             'location' => $request->location,
@@ -58,7 +59,13 @@ class ActivityController extends Controller
             'scheduled_at' => $request->scheduled_at,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-        ]);
+        ];
+
+        if ($request->hasFile('photo')) {
+            $data['photo_path'] = $request->file('photo')->store('activities', 'public');
+        }
+
+        Activity::create($data);
 
         return redirect()->back()->with('success', 'Activity added.');
     }
@@ -100,7 +107,12 @@ class ActivityController extends Controller
             'note'         => 'nullable|string',
             'latitude'     => 'nullable|numeric',
             'longitude'    => 'nullable|numeric',
+            'photo'        => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_path'] = $request->file('photo')->store('activities', 'public');
+        }
 
         $activity->update($validated);
 

@@ -10,7 +10,7 @@
 @foreach ($sorted as $index => $activity)
     <li
         x-data="{ openDelete: false }"
-        class="pt-3 first:pt-0 grid grid-cols-[auto_1fr_auto] gap-3
+        class="pt-3 first:pt-0 grid grid-cols-[auto_auto_1fr_auto] gap-3
                hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-md px-3 py-2 transition"
         data-marker-id="marker-{{ $activity->id }}"
     >
@@ -20,6 +20,15 @@
                    text-xs font-bold bg-primary text-white dark:bg-primary-light">
             {{ $index + 1 }}
         </span>
+
+        {{-- Photo --}}
+        <div class="self-center">
+            @if ($activity->photo_path)
+                <img src="{{ asset('storage/' . $activity->photo_path) }}" alt="{{ $activity->title }} photo" class="w-12 h-12 object-cover rounded-md">
+            @else
+                <div class="w-12 h-12 flex items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-gray-500 text-xs">N/A</div>
+            @endif
+        </div>
 
         {{-- Activity meta --}}
         <div class="min-w-0">

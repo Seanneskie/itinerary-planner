@@ -21,6 +21,7 @@
             ? ('/activities/' + activity.id)          /* PUT  → /activities/{id} */
             : '{{ route('activities.store') }}'        /* POST → /activities      */"
         method="POST"
+        enctype="multipart/form-data"
         class="space-y-6"
     >
         @csrf
@@ -37,6 +38,16 @@
 
         <!-- ── form grid ─────────────────────────────────────── -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- Photo upload -->
+            <div class="flex flex-col space-y-1 sm:col-span-2">
+                <label class="font-medium text-gray-700 dark:text-gray-300">Photo</label>
+                <template x-if="activity.photo_path">
+                    <img :src="'/storage/' + activity.photo_path" alt="Activity photo" class="h-40 w-full object-cover rounded-md mb-2" />
+                </template>
+                <input type="file" name="photo"
+                       class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none" />
+            </div>
 
             <!-- Title -->
             <div class="flex flex-col space-y-1">

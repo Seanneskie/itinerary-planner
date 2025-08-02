@@ -18,6 +18,7 @@ class Activity extends Model
         'attire_note',
         'latitude',
         'longitude',
+        'photo_path',
     ];
 
     public function itinerary()
