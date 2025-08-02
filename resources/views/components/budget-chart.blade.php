@@ -11,7 +11,7 @@
         const data = @json($entries->sortBy('entry_date')->map(fn($e) => [
             'date' => $e->entry_date->format('Y-m-d'),
             'amount' => (float) $e->amount,
-        ]));
+        ])->values());
 
         const colors = ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa'];
 
