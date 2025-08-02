@@ -24,7 +24,7 @@
                         @foreach($itinerary->budgetEntries as $entry)
                             <tr>
                                 <td class="py-2">{{ $entry->description }}</td>
-                                <td class="py-2">${{ number_format($entry->amount, 2) }}</td>
+                                <td class="py-2">PHP{{ number_format($entry->amount, 2) }}</td>
                                 <td class="py-2">{{ $entry->entry_date }}</td>
                                 <td class="py-2">{{ $entry->category }}</td>
                             </tr>
@@ -37,15 +37,20 @@
                     $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('amount');
                     $topCategory = $categoryTotals->sortDesc()->keys()->first();
                 @endphp
+                <ul class="text-sm text-gray-600 dark:text-gray-300 mt-4 space-y-1">
+                    @foreach($categoryTotals as $category => $total)
+                        <li>{{ $category }}: PHP{{ number_format($total, 2) }}</li>
+                    @endforeach
+                </ul>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mt-4">
-                    Top spending category: {{ $topCategory }} (${{ number_format($categoryTotals[$topCategory], 2) }})
+                    Top spending category: {{ $topCategory }} (PHP{{ number_format($categoryTotals[$topCategory], 2) }})
                 </p>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mt-4">
-                    Total: ${{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}
+                    Total: PHP{{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}
                 </p>
                 @if($averageBudget)
                     <p class="text-sm text-gray-600 dark:text-gray-300">
-                        Average budget for itineraries with activities in {{ $primaryLocation }}: ${{ number_format($averageBudget, 2) }}
+                        Average budget for itineraries with activities in {{ $primaryLocation }}: PHP{{ number_format($averageBudget, 2) }}
                         ({{ round(($itinerary->budgetEntries->sum('amount') - $averageBudget) / $averageBudget * 100, 1) }}% {{ $itinerary->budgetEntries->sum('amount') >= $averageBudget ? 'above' : 'below' }} average)
                     </p>
                 @endif
