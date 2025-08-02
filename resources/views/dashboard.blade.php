@@ -1,4 +1,4 @@
-<x-app-layout x-data="{ openForm: false }">
+<x-app-layout title="Dashboard" x-data="{ openForm: false }">
     <x-slot name="header">
         <div x-data="{ openForm: false }" class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
