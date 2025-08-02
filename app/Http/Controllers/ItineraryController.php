@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Itinerary;
 use App\Models\BudgetEntry;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\ItineraryExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class ItineraryController extends Controller
@@ -143,5 +146,31 @@ class ItineraryController extends Controller
         $itinerary->delete();
 
         return redirect()->route('dashboard')->with('success', 'Itinerary deleted.');
+    }
+
+    public function exportExcel(Itinerary $itinerary)
+    {
+        if ($itinerary->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
+
+        return Excel::download(new ItineraryExport($itinerary), 'itinerary.xlsx');
+    }
+
+    public function exportPdf(Itinerary $itinerary)
+    {
+        if ($itinerary->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
+
+        $pdf = Pdf::loadView('itineraries.export', [
+            'itinerary' => $itinerary,
+        ]);
+
+        return $pdf->download('itinerary.pdf');
     }
 }
