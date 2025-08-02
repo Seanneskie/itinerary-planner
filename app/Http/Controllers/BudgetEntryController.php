@@ -64,7 +64,7 @@ class BudgetEntryController extends Controller
      */
     public function show(BudgetEntry $budgetEntry)
     {
-        if ($budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -76,7 +76,7 @@ class BudgetEntryController extends Controller
      */
     public function edit(BudgetEntry $budgetEntry)
     {
-        if ($budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -88,7 +88,7 @@ class BudgetEntryController extends Controller
      */
     public function update(Request $request, BudgetEntry $budgetEntry)
     {
-        if ($budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
@@ -109,7 +109,7 @@ class BudgetEntryController extends Controller
      */
     public function destroy(BudgetEntry $budgetEntry)
     {
-        if ($budgetEntry->itinerary->user_id !== Auth::id()) {
+        if (!$budgetEntry->itinerary || $budgetEntry->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
