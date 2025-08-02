@@ -25,6 +25,10 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('itineraries', ItineraryController::class);
+    Route::get('itineraries/{itinerary}/export/excel', [ItineraryController::class, 'exportExcel'])
+        ->name('itineraries.export.excel');
+    Route::get('itineraries/{itinerary}/export/pdf', [ItineraryController::class, 'exportPdf'])
+        ->name('itineraries.export.pdf');
     Route::resource('itineraries.activities', ActivityController::class)->shallow();
     Route::resource('itineraries.group-members', GroupMemberController::class)->shallow()->only(['store', 'update', 'destroy']);
     Route::resource('itineraries.budgets', BudgetEntryController::class)

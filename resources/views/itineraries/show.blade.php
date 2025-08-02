@@ -92,5 +92,10 @@
                 <p class="text-gray-500 dark:text-gray-400">No budget entries yet.</p>
             @endif
         </div>
+
+        <div class="flex justify-end space-x-4">
+            <a href="{{ route('itineraries.export.excel', $itinerary) }}" class="px-4 py-2 bg-green-600 text-white rounded">Export to Excel</a>
+            <a href="{{ route('itineraries.export.pdf', $itinerary) }}" class="px-4 py-2 bg-red-600 text-white rounded">Export to PDF</a>
+        </div>
     </div>
 </x-app-layout>
