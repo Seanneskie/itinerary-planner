@@ -68,7 +68,7 @@
                                 <tr @if($category === $topCategory) class="font-semibold" @endif>
                                     <td class="py-2">{{ $category }}</td>
                                     <td class="py-2">PHP{{ number_format($total, 2) }}</td>
-                                    <td class="py-2">{{ round($total / $totalSpent * 100, 1) }}%</td>
+                                    <td class="py-2">{{ $totalSpent > 0 ? round($total / $totalSpent * 100, 1) : 0 }}%</td>
                                 </tr>
                             @endforeach
                         </tbody>
