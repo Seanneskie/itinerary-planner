@@ -38,7 +38,7 @@
                 </p>
             @endif
             @if ($activity->budget)
-                <p class="text-xs text-gray-500 dark:text-gray-400">Budget: ${{ number_format($activity->budget, 2) }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Budget: PHP{{ number_format($activity->budget, 2) }}</p>
             @endif
             @if ($activity->attire_color || $activity->attire_note)
                 <p class="text-xs text-gray-500 dark:text-gray-400">

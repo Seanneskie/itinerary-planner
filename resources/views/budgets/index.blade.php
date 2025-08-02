@@ -57,7 +57,7 @@
                     @foreach($itinerary->budgetEntries as $entry)
                         <tr>
                             <td class="py-2">{{ $entry->description }}</td>
-                            <td class="py-2">${{ number_format($entry->amount, 2) }}</td>
+                            <td class="py-2">PHP{{ number_format($entry->amount, 2) }}</td>
                             <td class="py-2">{{ $entry->entry_date }}</td>
                             <td class="py-2">{{ $entry->category }}</td>
                             <td class="py-2 text-right">
@@ -75,7 +75,15 @@
                 </tbody>
             </table>
 
-            <p class="text-right font-semibold mt-2">Total Spent: ${{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}</p>
+            @php
+                $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('amount');
+            @endphp
+            <p class="text-right font-semibold mt-2">Total Spent: PHP{{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}</p>
+            <ul class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                @foreach($categoryTotals as $category => $total)
+                    <li>{{ $category }}: PHP{{ number_format($total, 2) }}</li>
+                @endforeach
+            </ul>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <x-budget-chart :entries="$itinerary->budgetEntries" />
