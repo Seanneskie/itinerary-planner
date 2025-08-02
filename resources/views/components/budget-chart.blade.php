@@ -1,6 +1,6 @@
 @props(['entries'])
 <div class="mt-6">
-    <canvas id="budget-chart" height="200"></canvas>
+    <canvas id="budget-chart" height="150"></canvas>
 </div>
 
 @push('scripts')
@@ -26,6 +26,7 @@
                 }]
             },
             options: {
+                maintainAspectRatio: false,
                 scales: {
                     y: { beginAtZero: true }
                 }
