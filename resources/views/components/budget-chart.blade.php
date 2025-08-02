@@ -12,6 +12,9 @@
             'date' => $e->entry_date->format('Y-m-d'),
             'amount' => (float) $e->amount,
         ]));
+
+        const colors = ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa'];
+
         new Chart(ctx, {
             type: 'bar',
             data: {
@@ -19,7 +22,7 @@
                 datasets: [{
                     label: 'Amount',
                     data: data.map(d => d.amount),
-                    backgroundColor: '#60a5fa',
+                    backgroundColor: data.map((_, i) => colors[i % colors.length]),
                 }]
             },
             options: {
