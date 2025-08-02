@@ -20,7 +20,7 @@
             data: {
                 labels: data.map(d => d.date),
                 datasets: [{
-                    label: 'Amount',
+                    label: 'Spent',
                     data: data.map(d => d.amount),
                     backgroundColor: data.map((_, i) => colors[i % colors.length]),
                 }]

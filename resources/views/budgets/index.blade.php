@@ -16,7 +16,7 @@
                     <input type="text" id="description" name="description" placeholder="Description" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
                 </div>
                 <div>
-                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Amount <span class="text-red-500">*</span></label>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Budget Amount <span class="text-red-500">*</span></label>
                     <input type="number" step="0.01" id="amount" name="amount" placeholder="Amount" required class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
                 </div>
                 <div>
@@ -53,7 +53,8 @@
                         <thead>
                             <tr class="text-left">
                                 <th class="py-2">Description</th>
-                                <th class="py-2">Amount</th>
+                                <th class="py-2">Budgeted</th>
+                                <th class="py-2">Spent</th>
                                 <th class="py-2">Date</th>
                                 <th class="py-2">Category</th>
                                 <th></th>
@@ -64,11 +65,13 @@
                                 <tr>
                                     <td class="py-2">{{ $entry->description }}</td>
                                     <td class="py-2">PHP{{ number_format($entry->amount, 2) }}</td>
+                                    <td class="py-2">PHP{{ number_format($entry->spent_amount, 2) }}</td>
                                     <td class="py-2">{{ $entry->entry_date }}</td>
                                     <td class="py-2">{{ $entry->category }}</td>
                                     <td class="py-2 text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('budgets.edit', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-xs">Edit</a>
+                                            <a href="{{ route('budgets.edit-spent', $entry->id) }}" class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs">Update Spent</a>
                                             <form method="POST" action="{{ route('budgets.destroy', $entry->id) }}" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
@@ -83,11 +86,11 @@
                 </div>
                 <div class="space-y-6">
                     @php
-                        $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('amount');
+                        $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('spent_amount');
                     @endphp
                     <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <h4 class="font-semibold mb-2">Summary</h4>
-                        <p class="text-right font-semibold">Total Spent: PHP{{ number_format($itinerary->budgetEntries->sum('amount'), 2) }}</p>
+                        <p class="text-right font-semibold">Total Spent: PHP{{ number_format($itinerary->budgetEntries->sum('spent_amount'), 2) }}</p>
                         <ul class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                             @foreach($categoryTotals as $category => $total)
                                 <li>{{ $category }}: PHP{{ number_format($total, 2) }}</li>

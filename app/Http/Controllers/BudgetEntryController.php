@@ -54,6 +54,8 @@ class BudgetEntryController extends Controller
             'category' => 'nullable|string|max:255',
         ]);
 
+        $validated['spent_amount'] = 0;
+
         BudgetEntry::create($validated);
 
         return back()->with('success', 'Entry added.');
@@ -116,5 +118,29 @@ class BudgetEntryController extends Controller
         $budgetEntry->delete();
 
         return back()->with('success', 'Entry removed.');
+    }
+
+    public function editSpent(BudgetEntry $budgetEntry)
+    {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
+            abort(403);
+        }
+
+        return view('budgets.edit-spent', compact('budgetEntry'));
+    }
+
+    public function updateSpent(Request $request, BudgetEntry $budgetEntry)
+    {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'spent_amount' => 'required|numeric|min:0',
+        ]);
+
+        $budgetEntry->update($validated);
+
+        return back()->with('success', 'Spent amount updated.');
     }
 }

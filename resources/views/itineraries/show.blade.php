@@ -18,7 +18,8 @@
                             <thead>
                                 <tr class="text-left">
                                     <th class="py-2">Description</th>
-                                    <th class="py-2">Amount</th>
+                                    <th class="py-2">Budgeted</th>
+                                    <th class="py-2">Spent</th>
                                     <th class="py-2">Date</th>
                                     <th class="py-2">Category</th>
                                 </tr>
@@ -28,6 +29,7 @@
                                     <tr>
                                         <td class="py-2">{{ $entry->description }}</td>
                                         <td class="py-2">PHP{{ number_format($entry->amount, 2) }}</td>
+                                        <td class="py-2">PHP{{ number_format($entry->spent_amount, 2) }}</td>
                                         <td class="py-2">{{ $entry->entry_date }}</td>
                                         <td class="py-2">{{ $entry->category }}</td>
                                     </tr>
@@ -47,9 +49,9 @@
                     </div>
                 </div>
                 @php
-                    $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('amount');
+                    $categoryTotals = $itinerary->budgetEntries->groupBy('category')->map->sum('spent_amount');
                     $topCategory = $categoryTotals->sortDesc()->keys()->first();
-                    $totalSpent = $itinerary->budgetEntries->sum('amount');
+                    $totalSpent = $itinerary->budgetEntries->sum('spent_amount');
                 @endphp
                 <div class="mt-6">
                     <h4 class="text-md font-semibold mb-2">Category Breakdown</h4>
@@ -57,7 +59,7 @@
                         <thead>
                             <tr class="text-left">
                                 <th class="py-2">Category</th>
-                                <th class="py-2">Amount</th>
+                                <th class="py-2">Spent</th>
                                 <th class="py-2">Percent</th>
                             </tr>
                         </thead>

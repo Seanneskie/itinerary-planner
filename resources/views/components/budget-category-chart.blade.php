@@ -8,7 +8,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const ctx = document.getElementById('budget-category-chart');
-        const data = @json($entries->groupBy('category')->map(fn($items) => $items->sum('amount')));
+        const data = @json($entries->groupBy('category')->map(fn($items) => $items->sum('spent_amount')));
         new Chart(ctx, {
             type: 'doughnut',
             data: {

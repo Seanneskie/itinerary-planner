@@ -7,7 +7,8 @@
 
     <div class="py-6 max-w-xl mx-auto space-y-4">
         <p><strong>Description:</strong> {{ $budgetEntry->description }}</p>
-        <p><strong>Amount:</strong> PHP{{ number_format($budgetEntry->amount,2) }}</p>
+        <p><strong>Budgeted:</strong> PHP{{ number_format($budgetEntry->amount,2) }}</p>
+        <p><strong>Spent:</strong> PHP{{ number_format($budgetEntry->spent_amount,2) }}</p>
         <p><strong>Date:</strong> {{ $budgetEntry->entry_date }}</p>
         <p><strong>Category:</strong> {{ $budgetEntry->category }}</p>
     </div>

@@ -10,6 +10,7 @@ class BudgetEntry extends Model
         'itinerary_id',
         'description',
         'amount',
+        'spent_amount',
         'entry_date',
         'category',
     ];
@@ -22,6 +23,7 @@ class BudgetEntry extends Model
         return [
             'entry_date' => 'date',
             'amount' => 'float',
+            'spent_amount' => 'float',
         ];
     }
 
