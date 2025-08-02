@@ -1,4 +1,4 @@
-@props(['activities'])
+@props(['activities', 'bookings' => []])
 @php
     $mapId = 'itinerary-map-' . uniqid();
 @endphp
@@ -27,6 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .addTo(map);
             markers['marker-{{ $act->id }}'] = m{{ $act->id }};
             pathCoords.push([{{ $act->latitude }}, {{ $act->longitude }}]);
+        @endif
+    @endforeach
+
+    @foreach($bookings as $booking)
+        @if($booking->latitude && $booking->longitude)
+            const b{{ $booking->id }} = L.marker([
+                {{ $booking->latitude }}, {{ $booking->longitude }}
+            ], { title: "{{ $booking->place }}" })
+            .bindPopup(`<strong>{{ $booking->place }}</strong><br>{{ $booking->location ?? '' }}<br>Check-in: {{ $booking->check_in }}<br>Check-out: {{ $booking->check_out }}`)
+            .addTo(map);
+            markers['booking-{{ $booking->id }}'] = b{{ $booking->id }};
         @endif
     @endforeach
 

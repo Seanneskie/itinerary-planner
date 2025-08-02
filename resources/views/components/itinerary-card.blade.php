@@ -7,7 +7,10 @@
         openEditModal : false,
         openDeleteModal: false,
         openMemberModal: false,
-        activity      : {}        // currently-edited activity
+        openBookingForm: false,
+        openBookingEditModal: false,
+        activity      : {},
+        booking       : {}
     }" class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 space-y-4">
     <!-- ── Title & Info ─────────────────────────────────────────────── -->
     <div class="flex justify-between items-start">
@@ -82,6 +85,30 @@
         </div>
     </div>
 
+    <!-- ── Bookings List ──────────────────────────────────────────── -->
+    @if($itinerary->bookings->count())
+        <x-booking-list :bookings="$itinerary->bookings" />
+    @else
+        <p class="text-sm text-gray-400 italic">No bookings yet.</p>
+    @endif
+
+    <!-- ── Add-Booking Button ─────────────────────────────────────── -->
+    <x-primary-button type="button" class="text-xs" @click="booking = {}; openBookingForm = true">
+        + Add Booking
+    </x-primary-button>
+
+    <!-- ── Add-Booking Modal ──────────────────────────────────────── -->
+    <div x-show="openBookingForm" x-transition.opacity.scale.80 x-cloak
+        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        @include('booking.booking-form', ['itinerary' => $itinerary])
+    </div>
+
+    <!-- ── Edit-Booking Modal ─────────────────────────────────────── -->
+    <div x-show="openBookingEditModal" x-transition.opacity.scale.80 x-cloak
+        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        @include('booking.edit-modal')
+    </div>
+
     <!-- ── Activities List ──────────────────────────────────────────── -->
     @if($itinerary->activities->count())
         <x-activity-list :activities="$itinerary->activities" />
@@ -113,8 +140,8 @@
     </div>
 
     <!-- ── Map (hidden while any modal is open) ─────────────────────── -->
-    <div x-show="!openActivityForm && !openEditModal" x-transition.opacity>
-        <x-itinerary-map :activities="$itinerary->activities" />
+    <div x-show="!openActivityForm && !openEditModal && !openBookingForm && !openBookingEditModal" x-transition.opacity>
+        <x-itinerary-map :activities="$itinerary->activities" :bookings="$itinerary->bookings" />
     </div>
 
 </div>

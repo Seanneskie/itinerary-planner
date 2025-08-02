@@ -7,6 +7,7 @@ use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupMemberController;
 use App\Http\Controllers\BudgetEntryController;
+use App\Http\Controllers\BookingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('itineraries.activities', ActivityController::class)->shallow();
     Route::resource('itineraries.group-members', GroupMemberController::class)->shallow()->only(['store','update','destroy']);
     Route::resource('itineraries.budgets', BudgetEntryController::class)->shallow();
+    Route::resource('itineraries.bookings', BookingController::class)->shallow()->only(['store','update','destroy']);
 });
 
 Route::middleware(['auth'])->group(function () {
