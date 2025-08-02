@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\ItineraryController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BudgetEntryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupMemberController;
-use App\Http\Controllers\BudgetEntryController;
-use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ItineraryController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,9 +26,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('itineraries', ItineraryController::class);
     Route::resource('itineraries.activities', ActivityController::class)->shallow();
-    Route::resource('itineraries.group-members', GroupMemberController::class)->shallow()->only(['store','update','destroy']);
-    Route::resource('itineraries.budgets', BudgetEntryController::class)->shallow();
-    Route::resource('itineraries.bookings', BookingController::class)->shallow()->only(['store','update','destroy']);
+    Route::resource('itineraries.group-members', GroupMemberController::class)->shallow()->only(['store', 'update', 'destroy']);
+    Route::resource('itineraries.budgets', BudgetEntryController::class)
+        ->shallow()
+        ->parameters(['budgets' => 'budgetEntry']);
+    Route::resource('itineraries.bookings', BookingController::class)->shallow()->only(['store', 'update', 'destroy']);
 });
 
 Route::middleware(['auth'])->group(function () {
