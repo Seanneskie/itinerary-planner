@@ -84,11 +84,15 @@ class ItineraryController extends Controller
      */
     public function show(string $id)
     {
-        $itinerary = Itinerary::with(['activities', 'groupMembers', 'budgetEntries', 'bookings'])
+        $itinerary = Itinerary::with(['groupMembers', 'budgetEntries', 'bookings'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
-        $primaryLocation = $itinerary->activities->first()->location ?? null;
+        $activities = $itinerary->activities()
+            ->orderBy('scheduled_at')
+            ->paginate(10);
+
+        $primaryLocation = $activities->first()->location ?? null;
         $averageBudget = null;
 
         if ($primaryLocation) {
@@ -101,7 +105,7 @@ class ItineraryController extends Controller
             })->avg('amount');
         }
 
-        return view('itineraries.show', compact('itinerary', 'averageBudget', 'primaryLocation'));
+        return view('itineraries.show', compact('itinerary', 'activities', 'averageBudget', 'primaryLocation'));
     }
 
     /**

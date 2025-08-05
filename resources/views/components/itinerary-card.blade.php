@@ -1,5 +1,5 @@
 {{-- Itinerary Card --}}
-@props(['itinerary', 'showActions' => true])
+@props(['itinerary', 'activities' => null, 'showActions' => true])
 
 {{-- One Alpine scope controls everything inside --}}
 <div x-data="{
@@ -13,6 +13,11 @@
         booking       : {}
     }" class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 space-y-4">
     @php
+        $activities = $activities ?? $itinerary->activities;
+        $mapActivities = $activities instanceof \Illuminate\Contracts\Pagination\Paginator
+            ? collect($activities->items())
+            : $activities;
+
         $photo = $itinerary->photo_path
             ? Storage::url($itinerary->photo_path)
             : asset('images/default-photo.svg');
@@ -118,8 +123,8 @@
     </div>
 
     <!-- ── Activities List ──────────────────────────────────────────── -->
-    @if($itinerary->activities->count())
-        <x-activity-list :activities="$itinerary->activities" />
+    @if($activities->count())
+        <x-activity-list :activities="$activities" />
     @else
         <p class="text-sm text-gray-400 italic">No activities yet.</p>
     @endif
@@ -149,7 +154,7 @@
 
     <!-- ── Map (hidden while any modal is open) ─────────────────────── -->
     <div x-show="!openActivityForm && !openEditModal && !openBookingForm && !openBookingEditModal" x-transition.opacity>
-        <x-itinerary-map :activities="$itinerary->activities" :bookings="$itinerary->bookings" />
+        <x-itinerary-map :activities="$mapActivities" :bookings="$itinerary->bookings" />
     </div>
 
 </div>

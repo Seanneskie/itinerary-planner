@@ -1,13 +1,14 @@
 @props(['activities'])
 
 @php
-    // Keep items in path order
-    $sorted = $activities->sortBy('scheduled_at');
+    $start = ($activities instanceof \Illuminate\Contracts\Pagination\Paginator)
+        ? $activities->firstItem()
+        : 1;
 @endphp
 
 <ul id="activity-list"
     class="mt-4 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
-@foreach ($sorted as $index => $activity)
+@foreach ($activities as $index => $activity)
     <li
         x-data="{ openDelete: false }"
         class="pt-3 first:pt-0 grid grid-cols-[auto_auto_1fr_auto] gap-3
@@ -18,7 +19,7 @@
         <span
             class="self-center flex h-6 w-6 items-center justify-center rounded-full
                    text-xs font-bold bg-primary text-white dark:bg-primary-light">
-            {{ $index + 1 }}
+            {{ $start + $index }}
         </span>
 
         {{-- Photo --}}
@@ -112,6 +113,12 @@
     </li>
 @endforeach
 </ul>
+
+@if ($activities instanceof \Illuminate\Contracts\Pagination\Paginator)
+    <div class="mt-4">
+        {{ $activities->links() }}
+    </div>
+@endif
 
 @push('scripts')
 <script>
