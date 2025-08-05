@@ -1,12 +1,14 @@
 @props(['members'])
-<ul class="mt-4 space-y-2">
+@php $itemCount = count($members); @endphp
+<div x-data="{ limit: 5, count: {{ $itemCount }} }">
+<ul class="mt-4 space-y-2" id="group-member-list">
     @foreach($members as $member)
         @php
             $photo = $member->photo_path
                 ? Storage::url($member->photo_path)
                 : asset('images/default-photo.svg');
         @endphp
-        <li x-data="{ openEdit: false, openDelete: false }" class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded px-3 py-2">
+        <li x-data="{ openEdit: false, openDelete: false }" x-show="{{ $loop->index }} < limit" class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded px-3 py-2">
             <div class="flex items-center gap-3">
                 <img src="{{ $photo }}" alt="{{ $member->name }}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600">
                 <div>
@@ -73,3 +75,15 @@
         </li>
     @endforeach
 </ul>
+<button
+    x-show="count > 5"
+    @click="limit = limit === 5 ? count : 5"
+    @keydown.enter.prevent="limit = limit === 5 ? count : 5"
+    @keydown.space.prevent="limit = limit === 5 ? count : 5"
+    :aria-expanded="limit > 5"
+    aria-controls="group-member-list"
+    :aria-label="limit === 5 ? 'Show more members' : 'Show less members'"
+    class="mt-2 text-sm text-primary hover:underline">
+    <span x-text="limit === 5 ? 'Show more' : 'Show less'"></span>
+</button>
+</div>

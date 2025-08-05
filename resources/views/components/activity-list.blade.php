@@ -4,17 +4,19 @@
     $start = ($activities instanceof \Illuminate\Contracts\Pagination\Paginator)
         ? $activities->firstItem()
         : 1;
+    $itemCount = count($activities);
 @endphp
-
-<ul id="activity-list"
-    class="mt-4 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
-@foreach ($activities as $index => $activity)
-    <li
-        x-data="{ openDelete: false }"
-        class="pt-3 first:pt-0 grid grid-cols-[auto_auto_1fr_auto] gap-3
-               hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-md px-3 py-2 transition"
-        data-marker-id="marker-{{ $activity->id }}"
-    >
+<div x-data="{ limit: 5, count: {{ $itemCount }} }">
+    <ul id="activity-list"
+        class="mt-4 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
+    @foreach ($activities as $index => $activity)
+        <li
+            x-data="{ openDelete: false }"
+            x-show="{{ $index }} < limit"
+            class="pt-3 first:pt-0 grid grid-cols-[auto_auto_1fr_auto] gap-3
+                   hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-md px-3 py-2 transition"
+            data-marker-id="marker-{{ $activity->id }}"
+        >
         {{-- Sequence bubble --}}
         <span
             class="self-center flex h-6 w-6 items-center justify-center rounded-full
@@ -120,9 +122,21 @@
                 </div>
             </div>
         </div>
-    </li>
-@endforeach
-</ul>
+        </li>
+    @endforeach
+    </ul>
+    <button
+        x-show="count > 5"
+        @click="limit = limit === 5 ? count : 5"
+        @keydown.enter.prevent="limit = limit === 5 ? count : 5"
+        @keydown.space.prevent="limit = limit === 5 ? count : 5"
+        :aria-expanded="limit > 5"
+        aria-controls="activity-list"
+        :aria-label="limit === 5 ? 'Show more activities' : 'Show less activities'"
+        class="mt-2 text-sm text-primary hover:underline">
+        <span x-text="limit === 5 ? 'Show more' : 'Show less'"></span>
+    </button>
+</div>
 
 @if ($activities instanceof \Illuminate\Contracts\Pagination\Paginator)
     <div class="mt-4">

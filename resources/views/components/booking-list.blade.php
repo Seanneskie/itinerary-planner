@@ -1,7 +1,9 @@
 @props(['bookings'])
+@php $itemCount = count($bookings); @endphp
+<div x-data="{ limit: 5, count: {{ $itemCount }} }">
 <ul id="booking-list" class="mt-4 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
-    @foreach($bookings as $booking)
-        <li x-data="{ openDelete: false }" class="pt-3 first:pt-0 flex justify-between items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-md px-3 py-2 transition" data-marker-id="booking-{{ $booking->id }}">
+    @foreach($bookings as $index => $booking)
+        <li x-data="{ openDelete: false }" x-show="{{ $index }} < limit" class="pt-3 first:pt-0 flex justify-between items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/40 rounded-md px-3 py-2 transition" data-marker-id="booking-{{ $booking->id }}">
             <div class="min-w-0">
                 <p class="text-sm font-medium text-gray-800 dark:text-white">{{ $booking->place }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -35,6 +37,18 @@
         </li>
     @endforeach
 </ul>
+<button
+    x-show="count > 5"
+    @click="limit = limit === 5 ? count : 5"
+    @keydown.enter.prevent="limit = limit === 5 ? count : 5"
+    @keydown.space.prevent="limit = limit === 5 ? count : 5"
+    :aria-expanded="limit > 5"
+    aria-controls="booking-list"
+    :aria-label="limit === 5 ? 'Show more bookings' : 'Show less bookings'"
+    class="mt-2 text-sm text-primary hover:underline">
+    <span x-text="limit === 5 ? 'Show more' : 'Show less'"></span>
+</button>
+</div>
 
 @push('scripts')
 <script>
