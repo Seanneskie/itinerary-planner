@@ -148,9 +148,7 @@ class ItineraryController extends Controller
 
     public function exportExcel(Itinerary $itinerary)
     {
-        if ($itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $itinerary);
 
         $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
 
@@ -159,9 +157,7 @@ class ItineraryController extends Controller
 
     public function exportPdf(Itinerary $itinerary)
     {
-        if ($itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $itinerary);
 
         $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
 

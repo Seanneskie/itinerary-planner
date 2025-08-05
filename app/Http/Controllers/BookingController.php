@@ -39,9 +39,7 @@ class BookingController extends Controller
 
     public function update(Request $request, Booking $booking)
     {
-        if ($booking->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $booking);
 
         $itinerary = $booking->itinerary;
 
@@ -61,9 +59,7 @@ class BookingController extends Controller
 
     public function destroy(Booking $booking)
     {
-        if ($booking->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $booking);
 
         $booking->delete();
 

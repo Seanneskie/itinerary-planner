@@ -83,9 +83,7 @@ class BudgetEntryController extends Controller
      */
     public function show(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $budgetEntry);
 
         $budgetEntry->load('itinerary.groupMembers');
 
@@ -97,9 +95,7 @@ class BudgetEntryController extends Controller
      */
     public function edit(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $budgetEntry->load('itinerary.groupMembers');
 
@@ -111,9 +107,7 @@ class BudgetEntryController extends Controller
      */
     public function update(Request $request, BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $validated = $request->validate([
             'description' => 'required|string|max:255',
@@ -145,9 +139,7 @@ class BudgetEntryController extends Controller
      */
     public function destroy(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $budgetEntry);
 
         $budgetEntry->delete();
 
@@ -156,18 +148,14 @@ class BudgetEntryController extends Controller
 
     public function editSpent(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         return view('budgets.edit-spent', compact('budgetEntry'));
     }
 
     public function updateSpent(Request $request, BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $validated = $request->validate([
             'spent_amount' => 'required|numeric|min:0',
@@ -180,9 +168,7 @@ class BudgetEntryController extends Controller
 
     public function togglePaid(Request $request, BudgetEntry $budgetEntry, int $member)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $paid = $budgetEntry->paid_participants ?? [];
 

@@ -30,9 +30,7 @@ class GroupMemberController extends Controller
 
     public function update(Request $request, GroupMember $groupMember)
     {
-        if ($groupMember->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $groupMember);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -51,9 +49,7 @@ class GroupMemberController extends Controller
 
     public function destroy(GroupMember $groupMember)
     {
-        if ($groupMember->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $groupMember);
 
         $groupMember->delete();
 
