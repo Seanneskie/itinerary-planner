@@ -3,7 +3,6 @@
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BudgetEntryController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupMemberController;
 use App\Http\Controllers\ItineraryController;
 use App\Http\Controllers\ProfileController;
@@ -13,7 +12,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
+Route::get('/dashboard', [ItineraryController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
