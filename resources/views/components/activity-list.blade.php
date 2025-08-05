@@ -42,9 +42,18 @@
             </p>
 
             @if ($activity->note)
-                <p class="text-xs italic text-gray-500 dark:text-gray-400 line-clamp-2">
-                    {{ $activity->note }}
-                </p>
+                <div x-data="{ expanded: false }">
+                    <p class="text-xs italic text-gray-500 dark:text-gray-400" :class="expanded ? '' : 'line-clamp-2'">
+                        {{ $activity->note }}
+                    </p>
+                    <button type="button"
+                            class="mt-1 text-[11px] text-primary hover:underline"
+                            @click="expanded = !expanded">
+                        <span x-show="!expanded">Show more</span>
+        
+                        <span x-show="expanded">Show less</span>
+                    </button>
+                </div>
             @endif
             @if ($activity->budget)
                 <p class="text-xs text-gray-500 dark:text-gray-400">Budget: PHP{{ number_format($activity->budget, 2) }}</p>
