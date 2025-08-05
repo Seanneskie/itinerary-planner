@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Itinerary;
 class ActivityController extends Controller
 {
-    protected $fillable = ['title', 'note', 'scheduled_at', 'location', 'latitude', 'longitude', 'photo_path', 'itinerary_id'];
 
     /**
      * Display a listing of the resource.
