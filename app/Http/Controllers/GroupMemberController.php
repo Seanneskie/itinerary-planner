@@ -1,23 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreGroupMemberRequest;
+use App\Http\Requests\UpdateGroupMemberRequest;
 use App\Models\GroupMember;
 use App\Models\Itinerary;
 use Illuminate\Support\Facades\Auth;
 
 class GroupMemberController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreGroupMemberRequest $request)
     {
-        $itinerary = Itinerary::where('user_id', Auth::id())->findOrFail($request->itinerary_id);
-
-        $validated = $request->validate([
-            'itinerary_id' => 'required|exists:itineraries,id',
-            'name' => 'required|string|max:255',
-            'notes' => 'nullable|string',
-            'photo' => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('photo')) {
             $validated['photo_path'] = $request->file('photo')->store('group_members', 'public');
@@ -28,17 +22,13 @@ class GroupMemberController extends Controller
         return back()->with('success', 'Group member added.');
     }
 
-    public function update(Request $request, GroupMember $groupMember)
+    public function update(UpdateGroupMemberRequest $request, GroupMember $groupMember)
     {
         if ($groupMember->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'notes' => 'nullable|string',
-            'photo' => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('photo')) {
             $validated['photo_path'] = $request->file('photo')->store('group_members', 'public');
