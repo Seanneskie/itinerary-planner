@@ -6,6 +6,7 @@ use App\Models\BudgetEntry;
 use App\Models\Itinerary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class BudgetEntryController extends Controller
 {
@@ -17,9 +18,12 @@ class BudgetEntryController extends Controller
         $filter = $request->query('category');
 
         $itinerary = Itinerary::where('user_id', Auth::id())
-            ->with(['budgetEntries' => function ($query) use ($filter) {
-                $query->when($filter, fn ($q) => $q->where('category', $filter));
-            }])
+            ->with([
+                'budgetEntries' => function ($query) use ($filter) {
+                    $query->when($filter, fn ($q) => $q->where('category', $filter));
+                },
+                'groupMembers',
+            ])
             ->findOrFail($itinerary);
 
         $categories = BudgetEntry::where('itinerary_id', $itinerary->id)
@@ -44,6 +48,7 @@ class BudgetEntryController extends Controller
     public function store(Request $request)
     {
         $itinerary = Itinerary::where('user_id', Auth::id())
+            ->with('groupMembers')
             ->findOrFail($request->itinerary_id);
 
         $validated = $request->validate([
@@ -52,9 +57,15 @@ class BudgetEntryController extends Controller
             'amount' => 'required|numeric',
             'entry_date' => 'required|date',
             'category' => 'nullable|string|max:255',
+            'participants' => 'array|nullable',
+            'participants.*' => [
+                'integer',
+                Rule::exists('group_members', 'id')->where('itinerary_id', $itinerary->id),
+            ],
         ]);
 
         $validated['spent_amount'] = 0;
+        $validated['participants'] = $request->input('participants', []);
 
         BudgetEntry::create($validated);
 
@@ -70,6 +81,8 @@ class BudgetEntryController extends Controller
             abort(403);
         }
 
+        $budgetEntry->load('itinerary.groupMembers');
+
         return view('budgets.show', compact('budgetEntry'));
     }
 
@@ -81,6 +94,8 @@ class BudgetEntryController extends Controller
         if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
             abort(403);
         }
+
+        $budgetEntry->load('itinerary.groupMembers');
 
         return view('budgets.edit', compact('budgetEntry'));
     }
@@ -99,7 +114,14 @@ class BudgetEntryController extends Controller
             'amount' => 'required|numeric',
             'entry_date' => 'required|date',
             'category' => 'nullable|string|max:255',
+            'participants' => 'array|nullable',
+            'participants.*' => [
+                'integer',
+                Rule::exists('group_members', 'id')->where('itinerary_id', $budgetEntry->itinerary->id),
+            ],
         ]);
+
+        $validated['participants'] = $request->input('participants', []);
 
         $budgetEntry->update($validated);
 

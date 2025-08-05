@@ -13,6 +13,7 @@ class BudgetEntry extends Model
         'spent_amount',
         'entry_date',
         'category',
+        'participants',
     ];
 
     /**
@@ -24,6 +25,7 @@ class BudgetEntry extends Model
             'entry_date' => 'date',
             'amount' => 'float',
             'spent_amount' => 'float',
+            'participants' => 'array',
         ];
     }
 

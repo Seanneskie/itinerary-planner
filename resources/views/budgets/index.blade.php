@@ -27,6 +27,28 @@
                     <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Category</label>
                     <input type="text" id="category" name="category" placeholder="Category" class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
                 </div>
+                @if($itinerary->groupMembers->count())
+                    <div>
+                        <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Split with</span>
+                        <div class="flex flex-wrap gap-2 mt-1">
+                            @foreach($itinerary->groupMembers as $member)
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="participants[]" value="{{ $member->id }}" class="rounded">
+                                    <span class="ml-1 text-sm">{{ $member->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <label class="inline-flex items-center mt-2">
+                            <input type="checkbox" id="toggle-all" class="rounded">
+                            <span class="ml-1 text-sm">Include all</span>
+                        </label>
+                    </div>
+                    <script>
+                        document.getElementById('toggle-all')?.addEventListener('change', function () {
+                            document.querySelectorAll('input[name="participants[]"]').forEach(cb => cb.checked = this.checked);
+                        });
+                    </script>
+                @endif
                 <div class="text-right">
                     <button class="px-3 py-1 bg-primary hover:bg-primary-dark text-white rounded text-sm">Add</button>
                 </div>
@@ -54,6 +76,7 @@
                             <tr class="text-left text-gray-700 dark:text-gray-200">
                                 <th class="px-4 py-2 font-semibold uppercase tracking-wider">Description</th>
                                 <th class="px-4 py-2 font-semibold uppercase tracking-wider">Budgeted</th>
+                                <th class="px-4 py-2 font-semibold uppercase tracking-wider">Per Person</th>
                                 <th class="px-4 py-2 font-semibold uppercase tracking-wider">Spent</th>
                                 <th class="px-4 py-2 font-semibold uppercase tracking-wider">Date</th>
                                 <th class="px-4 py-2"></th>
@@ -66,12 +89,27 @@
                             @endphp
                             @foreach($groupedEntries as $category => $entries)
                                 <tr class="bg-gray-200 dark:bg-gray-900">
-                                    <th colspan="5" class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">{{ $category ?: 'Uncategorized' }}</th>
+                                    <th colspan="6" class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">{{ $category ?: 'Uncategorized' }}</th>
                                 </tr>
                                 @foreach($entries as $entry)
                                     <tr class="odd:bg-white odd:dark:bg-gray-800 even:bg-gray-50 even:dark:bg-gray-700">
-                                        <td class="px-4 py-2">{{ $entry->description }}</td>
+                                        <td class="px-4 py-2">
+                                            {{ $entry->description }}
+                                            @if($entry->participants)
+                                                @php
+                                                    $members = $itinerary->groupMembers->whereIn('id', $entry->participants);
+                                                @endphp
+                                                <p class="text-xs text-gray-500">Shared with: {{ $members->pluck('name')->join(', ') }}</p>
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-2 text-right">PHP{{ number_format($entry->amount, 2) }}</td>
+                                        <td class="px-4 py-2 text-right">
+                                            @if($entry->participants)
+                                                PHP{{ number_format($entry->amount / max(count($entry->participants),1), 2) }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-2 text-right">PHP{{ number_format($entry->spent_amount, 2) }}</td>
                                         <td class="px-4 py-2">{{ $entry->entry_date }}</td>
                                         <td class="px-4 py-2 text-right">
@@ -102,6 +140,7 @@
                                 <tr class="bg-gray-100 dark:bg-gray-700 font-semibold">
                                     <td class="px-4 py-2 text-right">Total</td>
                                     <td class="px-4 py-2 text-right">PHP{{ number_format($categoryBudget, 2) }}</td>
+                                    <td></td>
                                     <td class="px-4 py-2 text-right">PHP{{ number_format($categorySpent, 2) }}</td>
                                     <td colspan="2"></td>
                                 </tr>
@@ -109,6 +148,7 @@
                             <tr class="bg-gray-200 dark:bg-gray-900 font-bold">
                                 <td class="px-4 py-2 text-right">Grand Total</td>
                                 <td class="px-4 py-2 text-right">PHP{{ number_format($totals['budget'], 2) }}</td>
+                                <td></td>
                                 <td class="px-4 py-2 text-right">PHP{{ number_format($totals['spent'], 2) }}</td>
                                 <td colspan="2"></td>
                             </tr>

@@ -11,5 +11,12 @@
         <p><strong>Spent:</strong> PHP{{ number_format($budgetEntry->spent_amount,2) }}</p>
         <p><strong>Date:</strong> {{ $budgetEntry->entry_date }}</p>
         <p><strong>Category:</strong> {{ $budgetEntry->category }}</p>
+        @if($budgetEntry->participants)
+            @php
+                $members = $budgetEntry->itinerary->groupMembers->whereIn('id', $budgetEntry->participants);
+            @endphp
+            <p><strong>Shared with:</strong> {{ $members->pluck('name')->join(', ') }}</p>
+            <p><strong>Per Person:</strong> PHP{{ number_format($budgetEntry->amount / max(count($budgetEntry->participants),1), 2) }}</p>
+        @endif
     </div>
 </x-app-layout>
