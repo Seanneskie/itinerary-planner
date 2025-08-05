@@ -27,6 +27,7 @@
 </head>
 
 <body class="font-sans antialiased">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:outline-none focus:ring">Skip to main content</a>
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         @include('layouts.navigation')
 
@@ -40,7 +41,7 @@
         @endisset
 
         <!-- Page Content -->
-        <main>
+        <main id="main-content">
             {{ $slot }}
         </main>
         @if (session('success'))
