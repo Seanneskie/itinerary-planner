@@ -13,28 +13,30 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2">
                         <h4 class="text-md font-semibold mb-2">Entries</h4>
-                        <table class="min-w-full mb-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                            <thead class="bg-gray-50 dark:bg-gray-900">
-                                <tr class="text-left text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    <th class="py-2 px-3">Description</th>
-                                    <th class="py-2 px-3 text-right">Budgeted</th>
-                                    <th class="py-2 px-3 text-right">Spent</th>
-                                    <th class="py-2 px-3">Date</th>
-                                    <th class="py-2 px-3">Category</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-600 dark:text-gray-300">
-                                @foreach($itinerary->budgetEntries as $entry)
-                                    <tr class="{{ $loop->even ? 'bg-gray-50 dark:bg-gray-900' : '' }}">
-                                        <td class="py-2 px-3">{{ $entry->description }}</td>
-                                        <td class="py-2 px-3 text-right">PHP{{ number_format($entry->amount, 2) }}</td>
-                                        <td class="py-2 px-3 text-right">PHP{{ number_format($entry->spent_amount, 2) }}</td>
-                                        <td class="py-2 px-3">{{ $entry->entry_date->format('M j, Y') }}</td>
-                                        <td class="py-2 px-3">{{ $entry->category }}</td>
+                        <div class="overflow-x-auto w-full">
+                            <table class="w-full min-w-[600px] sm:min-w-full mb-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-50 dark:bg-gray-900">
+                                    <tr class="text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <th class="py-2 px-3">Description</th>
+                                        <th class="py-2 px-3 text-right">Budgeted</th>
+                                        <th class="py-2 px-3 text-right">Spent</th>
+                                        <th class="py-2 px-3">Date</th>
+                                        <th class="py-2 px-3">Category</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-600 dark:text-gray-300">
+                                    @foreach($itinerary->budgetEntries as $entry)
+                                        <tr class="{{ $loop->even ? 'bg-gray-50 dark:bg-gray-900' : '' }}">
+                                            <td class="py-2 px-3">{{ $entry->description }}</td>
+                                            <td class="py-2 px-3 text-right">PHP{{ number_format($entry->amount, 2) }}</td>
+                                            <td class="py-2 px-3 text-right">PHP{{ number_format($entry->spent_amount, 2) }}</td>
+                                            <td class="py-2 px-3">{{ $entry->entry_date->format('M j, Y') }}</td>
+                                            <td class="py-2 px-3">{{ $entry->category }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="space-y-6">
                         <div>
@@ -55,24 +57,26 @@
                 @endphp
                 <div class="mt-6">
                     <h4 class="text-md font-semibold mb-2">Category Breakdown</h4>
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-600 dark:text-gray-300">
-                        <thead>
-                            <tr class="text-left">
-                                <th class="py-2">Category</th>
-                                <th class="py-2">Spent</th>
-                                <th class="py-2">Percent</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach($categoryTotals as $category => $total)
-                                <tr @if($category === $topCategory) class="font-semibold" @endif>
-                                    <td class="py-2">{{ $category }}</td>
-                                    <td class="py-2">PHP{{ number_format($total, 2) }}</td>
-                                    <td class="py-2">{{ $totalSpent > 0 ? round($total / $totalSpent * 100, 1) : 0 }}%</td>
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full min-w-[480px] sm:min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-600 dark:text-gray-300">
+                            <thead>
+                                <tr class="text-left">
+                                    <th class="py-2">Category</th>
+                                    <th class="py-2">Spent</th>
+                                    <th class="py-2">Percent</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @foreach($categoryTotals as $category => $total)
+                                    <tr @if($category === $topCategory) class="font-semibold" @endif>
+                                        <td class="py-2">{{ $category }}</td>
+                                        <td class="py-2">PHP{{ number_format($total, 2) }}</td>
+                                        <td class="py-2">{{ $totalSpent > 0 ? round($total / $totalSpent * 100, 1) : 0 }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-300">
                     <p>Top spending category: {{ $topCategory }} (PHP{{ number_format($categoryTotals[$topCategory], 2) }})</p>
