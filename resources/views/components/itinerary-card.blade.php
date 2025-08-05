@@ -4,13 +4,11 @@
 {{-- One Alpine scope controls everything inside --}}
 <div x-data="{
         openActivityForm: false,
-        openEditModal : false,
-        openDeleteModal: false,
-        openMemberModal: false,
-        openBookingForm: false,
+        openEditModal   : false,
+        openBookingForm : false,
         openBookingEditModal: false,
-        activity      : {},
-        booking       : {}
+        activity        : {},
+        booking         : {}
     }" class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 space-y-4">
     @php
         $activities = $activities ?? $itinerary->activities;
@@ -43,15 +41,14 @@
                 <a href="{{ route('itineraries.edit', $itinerary->id) }}"
                    class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs">Edit</a>
 
-                <button @click="openDeleteModal = true"
+                <button @click="$dispatch('open-modal', { detail: 'delete-itinerary-{{ $itinerary->id }}' })"
                     class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">Delete</button>
 
                 <a href="{{ route('itineraries.show', $itinerary->id) }}"
                    class="inline-flex items-center px-2 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded text-xs">Details</a>
 
-                <div x-show="openDeleteModal" x-cloak x-transition.opacity.scale.80
-                    class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
+                <x-modal name="delete-itinerary-{{ $itinerary->id }}">
+                    <x-slot name="content">
                         <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-2">Confirm Delete</h2>
                         <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
                             Are you sure you want to delete <span class="font-semibold">{{ $itinerary->title }}</span>
@@ -59,7 +56,7 @@
                             This action cannot be undone.
                         </p>
                         <div class="flex justify-end gap-3">
-                            <button @click="openDeleteModal = false"
+                            <button @click="$dispatch('close-modal', { detail: 'delete-itinerary-{{ $itinerary->id }}' })"
                                 class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">Cancel</button>
                             <form method="POST" action="{{ route('itineraries.destroy', $itinerary->id) }}">
                                 @csrf
@@ -67,8 +64,8 @@
                                 <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">Delete</button>
                             </form>
                         </div>
-                    </div>
-                </div>
+                    </x-slot>
+                </x-modal>
             </div>
         @endif
     </div>
@@ -79,24 +76,23 @@
         <p class="text-sm text-gray-400 italic">No group members yet.</p>
     @endif
 
-    <button @click="openMemberModal = true"
+    <button @click="$dispatch('open-modal', { detail: 'add-member-{{ $itinerary->id }}' })"
         class="mt-2 px-3 py-1 bg-primary hover:bg-primary-light text-white rounded text-sm">
         + Add Member
     </button>
 
-    <div x-show="openMemberModal" x-cloak x-transition.opacity.scale.80
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+    <x-modal name="add-member-{{ $itinerary->id }}">
+        <x-slot name="content">
             <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Add Member</h2>
             @include('group-member.form', ['itinerary' => $itinerary])
             <div class="text-right mt-2">
-                <button @click="openMemberModal = false"
+                <button @click="$dispatch('close-modal', { detail: 'add-member-{{ $itinerary->id }}' })"
                     class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">
                     Close
                 </button>
             </div>
-        </div>
-    </div>
+        </x-slot>
+    </x-modal>
 
     <!-- ── Bookings List ──────────────────────────────────────────── -->
     @if($itinerary->bookings->count())
@@ -106,21 +102,23 @@
     @endif
 
     <!-- ── Add-Booking Button ─────────────────────────────────────── -->
-    <x-primary-button type="button" class="text-xs" @click="booking = {}; openBookingForm = true">
+    <x-primary-button type="button" class="text-xs" @click="booking = {}; openBookingForm = true; $dispatch('open-modal', { detail: 'add-booking-{{ $itinerary->id }}' })">
         + Add Booking
     </x-primary-button>
 
     <!-- ── Add-Booking Modal ──────────────────────────────────────── -->
-    <div x-show="openBookingForm" x-transition.opacity.scale.80 x-cloak
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-        @include('booking.booking-form', ['itinerary' => $itinerary])
-    </div>
+    <x-modal name="add-booking-{{ $itinerary->id }}">
+        <x-slot name="content">
+            @include('booking.booking-form', ['itinerary' => $itinerary, 'closeEvent' => 'add-booking-' . $itinerary->id])
+        </x-slot>
+    </x-modal>
 
     <!-- ── Edit-Booking Modal ─────────────────────────────────────── -->
-    <div x-show="openBookingEditModal" x-transition.opacity.scale.80 x-cloak
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-        @include('booking.edit-modal')
-    </div>
+    <x-modal name="edit-booking-{{ $itinerary->id }}">
+        <x-slot name="content">
+            @include('booking.booking-form', ['itinerary' => $itinerary, 'closeEvent' => 'edit-booking-' . $itinerary->id])
+        </x-slot>
+    </x-modal>
 
     <!-- ── Activities List ──────────────────────────────────────────── -->
     @if($activities->count())
@@ -131,7 +129,7 @@
 
     <!-- ── Add-Activity Button ──────────────────────────────────────── -->
     <div class="flex gap-2">
-        <x-primary-button type="button" class="text-xs" @click="activity = {}; openActivityForm = true">
+        <x-primary-button type="button" class="text-xs" @click="activity = {}; openActivityForm = true; $dispatch('open-modal', { detail: 'add-activity-{{ $itinerary->id }}' })">
             + Add Activity
         </x-primary-button>
         <a href="{{ route('itineraries.budgets.index', $itinerary->id) }}"
@@ -141,16 +139,18 @@
     </div>
 
     <!-- ── Add-Activity Modal ───────────────────────────────────────── -->
-    <div x-show="openActivityForm" x-transition.opacity.scale.80 x-cloak
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-        @include('activity.activity-form', ['itinerary' => $itinerary])
-    </div>
+    <x-modal name="add-activity-{{ $itinerary->id }}">
+        <x-slot name="content">
+            @include('activity.activity-form', ['itinerary' => $itinerary, 'closeEvent' => 'add-activity-' . $itinerary->id])
+        </x-slot>
+    </x-modal>
 
     <!-- ── Edit-Activity Modal (shared scope) ───────────────────────── -->
-    <div x-show="openEditModal" x-transition.opacity.scale.80 x-cloak
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-        @include('activity.edit-modal')
-    </div>
+    <x-modal name="edit-activity-{{ $itinerary->id }}">
+        <x-slot name="content">
+            @include('activity.activity-form', ['itinerary' => $itinerary, 'closeEvent' => 'edit-activity-' . $itinerary->id])
+        </x-slot>
+    </x-modal>
 
     <!-- ── Map (hidden while any modal is open) ─────────────────────── -->
     <div x-show="!openActivityForm && !openEditModal && !openBookingForm && !openBookingEditModal" x-transition.opacity>

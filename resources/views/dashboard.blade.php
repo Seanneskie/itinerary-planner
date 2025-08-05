@@ -1,18 +1,16 @@
-<x-app-layout title="Dashboard" x-data="{ openForm: false }">
+<x-app-layout title="Dashboard">
     <x-slot name="header">
-        <div x-data="{ openForm: false }" class="flex items-center justify-between">
+        <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Your Itineraries') }}
             </h2>
-            <button @click="openForm = true" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded">
+            <button @click="$dispatch('open-modal', { detail: 'create-itinerary' })" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded">
                 + Add Itinerary
             </button>
 
             <!-- Modal -->
-            <div x-show="openForm" x-transition x-cloak
-                class="fixed inset-0 z-40 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-xl mx-auto"
-                    @click.away="openForm = false">
+            <x-modal name="create-itinerary">
+                <x-slot name="content">
                     <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">New Itinerary</h3>
 
                     <form method="POST" action="{{ route('itineraries.store') }}" enctype="multipart/form-data">
@@ -53,7 +51,7 @@
                         </div>
 
                         <div class="flex justify-end gap-2">
-                            <button type="button" @click="openForm = false"
+                            <button type="button" @click="$dispatch('close-modal', { detail: 'create-itinerary' })"
                                 class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">
                                 Cancel
                             </button>
@@ -63,8 +61,8 @@
                             </button>
                         </div>
                     </form>
-                </div>
-            </div>
+                </x-slot>
+            </x-modal>
         </div>
     </x-slot>
 
