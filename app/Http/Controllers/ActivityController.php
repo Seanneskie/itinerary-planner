@@ -85,9 +85,7 @@ class ActivityController extends Controller
      */
     public function update(UpdateActivityRequest $request, Activity $activity)
     {
-        if ($activity->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $activity);
 
         $validated = $request->validated();
 
@@ -117,9 +115,7 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
-        if ($activity->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $activity);
 
         $activity->budgetEntry()->delete();
         $activity->delete();

@@ -24,9 +24,7 @@ class GroupMemberController extends Controller
 
     public function update(UpdateGroupMemberRequest $request, GroupMember $groupMember)
     {
-        if ($groupMember->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $groupMember);
 
         $validated = $request->validated();
 
@@ -41,9 +39,7 @@ class GroupMemberController extends Controller
 
     public function destroy(GroupMember $groupMember)
     {
-        if ($groupMember->itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $groupMember);
 
         $groupMember->delete();
 
