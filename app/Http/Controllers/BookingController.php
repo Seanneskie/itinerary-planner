@@ -2,28 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreBookingRequest;
+use App\Http\Requests\UpdateBookingRequest;
 use App\Models\Booking;
-use App\Models\Itinerary;
 use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreBookingRequest $request)
     {
-        $itinerary = Itinerary::where('user_id', Auth::id())
-            ->findOrFail($request->itinerary_id);
-
-        $request->validate([
-            'itinerary_id' => 'required|exists:itineraries,id',
-            'place' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'check_in' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
-            'check_out' => ['required', 'date', 'after_or_equal:check_in', 'before_or_equal:' . $itinerary->end_date],
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
-
         Booking::create([
             'itinerary_id' => $request->itinerary_id,
             'place' => $request->place,
@@ -37,22 +24,13 @@ class BookingController extends Controller
         return redirect()->back()->with('success', 'Booking added.');
     }
 
-    public function update(Request $request, Booking $booking)
+    public function update(UpdateBookingRequest $request, Booking $booking)
     {
         if ($booking->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $itinerary = $booking->itinerary;
-
-        $validated = $request->validate([
-            'place' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'check_in' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
-            'check_out' => ['required', 'date', 'after_or_equal:check_in', 'before_or_equal:' . $itinerary->end_date],
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
+        $validated = $request->validated();
 
         $booking->update($validated);
 

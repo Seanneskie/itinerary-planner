@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreActivityRequest;
+use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
 use App\Models\BudgetEntry;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Itinerary;
 class ActivityController extends Controller
 {
 
@@ -29,25 +29,8 @@ class ActivityController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreActivityRequest $request)
     {
-        $itinerary = Itinerary::where('user_id', Auth::id())
-            ->findOrFail($request->itinerary_id);
-
-        $request->validate([
-            'itinerary_id' => 'required|exists:itineraries,id',
-            'title' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'budget' => 'nullable|numeric|min:0',
-            'attire_color' => 'nullable|string|max:255',
-            'attire_note' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-            'scheduled_at' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'photo' => 'nullable|image|max:2048',
-        ]);
-
         $data = [
             'itinerary_id' => $request->itinerary_id,
             'title' => $request->title,
@@ -100,26 +83,13 @@ class ActivityController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Activity $activity)
+    public function update(UpdateActivityRequest $request, Activity $activity)
     {
         if ($activity->itinerary->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $itinerary = $activity->itinerary;
-
-        $validated = $request->validate([
-            'title'        => 'required|string|max:255',
-            'location'     => 'nullable|string|max:255',
-            'budget'       => 'nullable|numeric|min:0',
-            'attire_color' => 'nullable|string|max:255',
-            'attire_note'  => 'nullable|string|max:255',
-            'scheduled_at' => ['required', 'date', 'after_or_equal:' . $itinerary->start_date, 'before_or_equal:' . $itinerary->end_date],
-            'note'         => 'nullable|string',
-            'latitude'     => 'nullable|numeric',
-            'longitude'    => 'nullable|numeric',
-            'photo'        => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('photo')) {
             $validated['photo_path'] = $request->file('photo')->store('activities', 'public');
