@@ -26,4 +26,9 @@ class Activity extends Model
         return $this->belongsTo(Itinerary::class);
     }
 
+    public function budgetEntry()
+    {
+        return $this->hasOne(BudgetEntry::class);
+    }
+
 }

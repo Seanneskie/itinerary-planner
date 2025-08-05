@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('budget_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('itinerary_id')->constrained()->onDelete('cascade');
+            $table->foreignId('activity_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('description');
             $table->decimal('amount', 8, 2);
             $table->date('entry_date');

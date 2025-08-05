@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Activity;
+use App\Models\BudgetEntry;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Itinerary;
 class ActivityController extends Controller
@@ -65,7 +66,18 @@ class ActivityController extends Controller
             $data['photo_path'] = $request->file('photo')->store('activities', 'public');
         }
 
-        Activity::create($data);
+        $activity = Activity::create($data);
+
+        if ($request->filled('budget')) {
+            $activity->budgetEntry()->create([
+                'itinerary_id' => $request->itinerary_id,
+                'description'  => $request->title,
+                'amount'       => $request->budget,
+                'entry_date'   => $request->scheduled_at,
+                'category'     => 'Activity',
+                'spent_amount' => 0,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Activity added.');
     }
@@ -116,6 +128,18 @@ class ActivityController extends Controller
 
         $activity->update($validated);
 
+        if (!is_null($activity->budget)) {
+            $activity->budgetEntry()->updateOrCreate([], [
+                'itinerary_id' => $activity->itinerary_id,
+                'description'  => $activity->title,
+                'amount'       => $activity->budget,
+                'entry_date'   => $activity->scheduled_at,
+                'category'     => 'Activity',
+            ]);
+        } else {
+            $activity->budgetEntry()->delete();
+        }
+
         return redirect()->back()->with('success', 'Activity updated successfully!');
     }
 
@@ -128,6 +152,7 @@ class ActivityController extends Controller
             abort(403);
         }
 
+        $activity->budgetEntry()->delete();
         $activity->delete();
 
         return redirect()->back()->with('success', 'Activity deleted.');
