@@ -12,7 +12,7 @@
                 </p>
             </div>
             <div class="flex items-center gap-1">
-                <button type="button" @click.prevent.stop="booking = {{ $booking->toJson() }}; openBookingEditModal = true" class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs font-medium">Edit</button>
+                <button type="button" @click.prevent.stop="booking = {{ $booking->toJson() }}; openBookingEditModal = true; $dispatch('open-modal', { detail: 'edit-booking-{{ $booking->itinerary_id }}' })" class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs font-medium">Edit</button>
                 <button @click="openDelete = true" class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium">Delete</button>
                 <div x-show="openDelete" x-cloak x-transition.opacity.scale.80 class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
                     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">

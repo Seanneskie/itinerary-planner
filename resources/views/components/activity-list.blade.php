@@ -86,6 +86,7 @@
                    @click.prevent.stop="
                        activity      = {{ $activity->toJson() }};
                        openEditModal = true;
+                       $dispatch('open-modal', { detail: 'edit-activity-{{ $activity->itinerary_id }}' })
                    "
                    class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs font-medium">
                     Edit
