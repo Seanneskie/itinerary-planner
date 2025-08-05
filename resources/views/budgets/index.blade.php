@@ -43,6 +43,17 @@
                             <span class="ml-1 text-sm">Include all</span>
                         </label>
                     </div>
+                    <div class="mt-2">
+                        <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Mark Paid</span>
+                        <div class="flex flex-wrap gap-2 mt-1">
+                            @foreach($itinerary->groupMembers as $member)
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="paid_participants[]" value="{{ $member->id }}" class="rounded">
+                                    <span class="ml-1 text-sm">{{ $member->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
                     <script>
                         document.getElementById('toggle-all')?.addEventListener('change', function () {
                             document.querySelectorAll('input[name="participants[]"]').forEach(cb => cb.checked = this.checked);
@@ -99,7 +110,19 @@
                                                 @php
                                                     $members = $itinerary->groupMembers->whereIn('id', $entry->participants);
                                                 @endphp
-                                                <p class="text-xs text-gray-500">Shared with: {{ $members->pluck('name')->join(', ') }}</p>
+                                                <ul class="text-xs text-gray-500 space-y-1">
+                                                    @foreach($members as $member)
+                                                        <li>
+                                                            <form method="POST" action="{{ route('budgets.toggle-paid', [$entry->id, $member->id]) }}" class="inline">
+                                                                @csrf
+                                                                <label class="inline-flex items-center">
+                                                                    <input type="checkbox" onchange="this.form.submit()" @checked(in_array($member->id, $entry->paid_participants ?? [])) class="rounded">
+                                                                    <span class="ml-1">{{ $member->name }}</span>
+                                                                </label>
+                                                            </form>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
                                             @endif
                                         </td>
                                         <td class="px-4 py-2 text-right">PHP{{ number_format($entry->amount, 2) }}</td>

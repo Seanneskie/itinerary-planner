@@ -41,6 +41,17 @@
                         <span class="ml-1 text-sm">Include all</span>
                     </label>
                 </div>
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Paid by</span>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        @foreach($budgetEntry->itinerary->groupMembers as $member)
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="paid_participants[]" value="{{ $member->id }}" @checked(in_array($member->id, old('paid_participants', $budgetEntry->paid_participants ?? []))) class="rounded">
+                                <span class="ml-1 text-sm">{{ $member->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
                 <script>
                     document.getElementById('toggle-all')?.addEventListener('change', function () {
                         document.querySelectorAll('input[name="participants[]"]').forEach(cb => cb.checked = this.checked);

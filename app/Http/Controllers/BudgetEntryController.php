@@ -62,10 +62,16 @@ class BudgetEntryController extends Controller
                 'integer',
                 Rule::exists('group_members', 'id')->where('itinerary_id', $itinerary->id),
             ],
+            'paid_participants' => 'array|nullable',
+            'paid_participants.*' => [
+                'integer',
+                Rule::exists('group_members', 'id')->where('itinerary_id', $itinerary->id),
+            ],
         ]);
 
         $validated['spent_amount'] = 0;
         $validated['participants'] = $request->input('participants', []);
+        $validated['paid_participants'] = $request->input('paid_participants', []);
 
         BudgetEntry::create($validated);
 
@@ -119,9 +125,15 @@ class BudgetEntryController extends Controller
                 'integer',
                 Rule::exists('group_members', 'id')->where('itinerary_id', $budgetEntry->itinerary->id),
             ],
+            'paid_participants' => 'array|nullable',
+            'paid_participants.*' => [
+                'integer',
+                Rule::exists('group_members', 'id')->where('itinerary_id', $budgetEntry->itinerary->id),
+            ],
         ]);
 
         $validated['participants'] = $request->input('participants', []);
+        $validated['paid_participants'] = $request->input('paid_participants', []);
 
         $budgetEntry->update($validated);
 
@@ -164,5 +176,24 @@ class BudgetEntryController extends Controller
         $budgetEntry->update($validated);
 
         return back()->with('success', 'Spent amount updated.');
+    }
+
+    public function togglePaid(Request $request, BudgetEntry $budgetEntry, int $member)
+    {
+        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
+            abort(403);
+        }
+
+        $paid = $budgetEntry->paid_participants ?? [];
+
+        if (in_array($member, $paid)) {
+            $paid = array_values(array_diff($paid, [$member]));
+        } else {
+            $paid[] = $member;
+        }
+
+        $budgetEntry->update(['paid_participants' => $paid]);
+
+        return back();
     }
 }
