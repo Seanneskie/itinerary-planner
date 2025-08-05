@@ -95,6 +95,32 @@ class BudgetEntryTest extends TestCase
         $response = $this->actingAs($user)->get(route('itineraries.budgets.index', $itinerary->id));
 
         $response->assertSee('PHP50.00', false);
-        $response->assertSee('Shared with: Alice, Bob', false);
+        $response->assertSee('Alice', false);
+        $response->assertSee('Bob', false);
+    }
+
+    public function test_store_saves_paid_participants(): void
+    {
+        $user = User::factory()->create();
+
+        $itinerary = Itinerary::create([
+            'user_id' => $user->id,
+            'title' => 'Sample Trip',
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->addDay()->toDateString(),
+        ]);
+
+        $member = $itinerary->groupMembers()->create(['name' => 'Alice']);
+
+        $this->actingAs($user)->post(route('itineraries.budgets.store', $itinerary->id), [
+            'itinerary_id' => $itinerary->id,
+            'description' => 'Dinner',
+            'amount' => 100,
+            'entry_date' => now()->toDateString(),
+            'paid_participants' => [$member->id],
+        ]);
+
+        $entry = BudgetEntry::first();
+        $this->assertEquals([$member->id], $entry->paid_participants);
     }
 }

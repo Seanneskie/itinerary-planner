@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
         ->parameters(['budgets' => 'budgetEntry']);
     Route::get('budgets/{budgetEntry}/spent', [BudgetEntryController::class, 'editSpent'])->name('budgets.edit-spent');
     Route::patch('budgets/{budgetEntry}/spent', [BudgetEntryController::class, 'updateSpent'])->name('budgets.update-spent');
+    Route::post('budgets/{budgetEntry}/participants/{member}/toggle', [BudgetEntryController::class, 'togglePaid'])->name('budgets.toggle-paid');
     Route::resource('itineraries.bookings', BookingController::class)->shallow()->only(['store', 'update', 'destroy']);
 });
 

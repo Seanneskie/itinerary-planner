@@ -15,7 +15,19 @@
             @php
                 $members = $budgetEntry->itinerary->groupMembers->whereIn('id', $budgetEntry->participants);
             @endphp
-            <p><strong>Shared with:</strong> {{ $members->pluck('name')->join(', ') }}</p>
+            <p><strong>Participants:</strong></p>
+            <ul class="list-disc ml-4">
+                @foreach($members as $member)
+                    <li>
+                        {{ $member->name }}
+                        @if(in_array($member->id, $budgetEntry->paid_participants ?? []))
+                            <span class="text-green-600">(paid)</span>
+                        @else
+                            <span class="text-red-600">(unpaid)</span>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
             <p><strong>Per Person:</strong> PHP{{ number_format($budgetEntry->amount / max(count($budgetEntry->participants),1), 2) }}</p>
         @endif
     </div>
