@@ -65,8 +65,36 @@ class BudgetEntryTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('itineraries.budgets.index', $itinerary->id));
 
-        $response->assertSee('<th colspan="5"', false);
+        $response->assertSee('<th colspan="6"', false);
         $response->assertSee('Food', false);
         $response->assertSee('Transport', false);
+    }
+
+    public function test_budget_entry_shows_per_person_share(): void
+    {
+        $user = User::factory()->create();
+
+        $itinerary = Itinerary::create([
+            'user_id' => $user->id,
+            'title' => 'Sample Trip',
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->addDay()->toDateString(),
+        ]);
+
+        $member1 = $itinerary->groupMembers()->create(['name' => 'Alice']);
+        $member2 = $itinerary->groupMembers()->create(['name' => 'Bob']);
+
+        BudgetEntry::create([
+            'itinerary_id' => $itinerary->id,
+            'description' => 'Dinner',
+            'amount' => 100.00,
+            'entry_date' => now()->toDateString(),
+            'participants' => [$member1->id, $member2->id],
+        ]);
+
+        $response = $this->actingAs($user)->get(route('itineraries.budgets.index', $itinerary->id));
+
+        $response->assertSee('PHP50.00', false);
+        $response->assertSee('Shared with: Alice, Bob', false);
     }
 }

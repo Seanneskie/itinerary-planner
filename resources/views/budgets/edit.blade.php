@@ -25,6 +25,28 @@
                 <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Category</label>
                 <input type="text" id="category" name="category" value="{{ old('category', $budgetEntry->category) }}" class="w-full px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white ring-1 ring-gray-300">
             </div>
+            @if($budgetEntry->itinerary->groupMembers->count())
+                <div>
+                    <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Split with</span>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        @foreach($budgetEntry->itinerary->groupMembers as $member)
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="participants[]" value="{{ $member->id }}" @checked(in_array($member->id, old('participants', $budgetEntry->participants ?? []))) class="rounded">
+                                <span class="ml-1 text-sm">{{ $member->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <label class="inline-flex items-center mt-2">
+                        <input type="checkbox" id="toggle-all" class="rounded">
+                        <span class="ml-1 text-sm">Include all</span>
+                    </label>
+                </div>
+                <script>
+                    document.getElementById('toggle-all')?.addEventListener('change', function () {
+                        document.querySelectorAll('input[name="participants[]"]').forEach(cb => cb.checked = this.checked);
+                    });
+                </script>
+            @endif
             <div class="text-right">
                 <button class="px-3 py-1 bg-primary hover:bg-primary-dark text-white rounded text-sm">Update</button>
             </div>
