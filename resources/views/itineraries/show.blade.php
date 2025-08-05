@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-        <x-itinerary-card :itinerary="$itinerary" />
+        <x-itinerary-card :itinerary="$itinerary" :activities="$activities" />
         <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Budget Overview</h3>
             @if($itinerary->budgetEntries->count())
