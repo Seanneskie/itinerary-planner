@@ -18,20 +18,20 @@ class BudgetEntryController extends Controller
         $filter = $request->query('category');
 
         $itinerary = Itinerary::where('user_id', Auth::id())
-            ->with([
-                'budgetEntries' => function ($query) use ($filter) {
-                    $query->when($filter, fn ($q) => $q->where('category', $filter));
-                },
-                'groupMembers',
-            ])
+            ->with('groupMembers')
             ->findOrFail($itinerary);
+
+        $budgetEntries = BudgetEntry::where('itinerary_id', $itinerary->id)
+            ->when($filter, fn ($q) => $q->where('category', $filter))
+            ->paginate(10)
+            ->withQueryString();
 
         $categories = BudgetEntry::where('itinerary_id', $itinerary->id)
             ->pluck('category')
             ->filter()
             ->unique();
 
-        return view('budgets.index', compact('itinerary', 'categories', 'filter'));
+        return view('budgets.index', compact('itinerary', 'categories', 'filter', 'budgetEntries'));
     }
 
     /**

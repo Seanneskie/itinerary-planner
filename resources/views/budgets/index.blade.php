@@ -67,7 +67,7 @@
             </form>
         @endif
 
-        @if($itinerary->budgetEntries->count())
+        @if($budgetEntries->count())
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2">
                     <h3 class="text-lg font-semibold mb-3">Budget Entries</h3>
@@ -84,7 +84,7 @@
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @php
-                                $groupedEntries = $itinerary->budgetEntries->sortBy('category')->groupBy('category');
+                                $groupedEntries = $budgetEntries->sortBy('category')->groupBy('category');
                                 $totals = ['budget' => 0, 'spent' => 0];
                             @endphp
                             @foreach($groupedEntries as $category => $entries)
@@ -154,10 +154,18 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="mt-4">
+                        {{ $budgetEntries->links() }}
+                        @if($budgetEntries->hasMorePages())
+                            <div class="text-center mt-2">
+                                <a href="{{ $budgetEntries->nextPageUrl() }}" class="px-3 py-1 bg-primary hover:bg-primary-dark text-white rounded text-sm">Show more</a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
                 <div class="space-y-6">
                     @php
-                        $entries = $itinerary->budgetEntries;
+                        $entries = $budgetEntries;
                         $categoryTotals = $entries->groupBy('category')->map->sum('spent_amount');
                         $totalBudget = $entries->sum('amount');
                         $totalSpent = $entries->sum('spent_amount');
@@ -174,11 +182,11 @@
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <h4 class="font-semibold mb-2">Spending Over Time</h4>
-                        <x-budget-chart :entries="$itinerary->budgetEntries" />
+                        <x-budget-chart :entries="$budgetEntries" />
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <h4 class="font-semibold mb-2">By Category</h4>
-                        <x-budget-category-chart :entries="$itinerary->budgetEntries" />
+                        <x-budget-category-chart :entries="$budgetEntries" />
                     </div>
                 </div>
             </div>
