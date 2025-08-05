@@ -23,7 +23,7 @@
                     class="inline-flex items-center px-2 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs">
                     Edit
                 </button>
-                <button @click="openDelete = true"
+                <button @click="$dispatch('open-modal', 'delete-member-{{ $member->id }}')"
                     class="inline-flex items-center px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">
                     Delete
                 </button>
@@ -56,22 +56,18 @@
                 </div>
             </div>
 
-            <div x-show="openDelete" x-cloak x-transition.opacity.scale.80 class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
-                    <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-2">Confirm Delete</h2>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                        Are you sure you want to delete <span class="font-semibold">{{ $member->name }}</span>? This action cannot be undone.
-                    </p>
-                    <div class="flex justify-end gap-3">
-                        <button @click="openDelete = false" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-white rounded">Cancel</button>
-                        <form method="POST" action="{{ route('group-members.destroy', $member->id) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <x-confirm-dialog name="delete-member-{{ $member->id }}" title="Confirm Delete">
+                <x-slot name="message">
+                    Are you sure you want to delete <span class="font-semibold">{{ $member->name }}</span>? This action cannot be undone.
+                </x-slot>
+                <x-slot name="confirm">
+                    <form method="POST" action="{{ route('group-members.destroy', $member->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <x-danger-button>Delete</x-danger-button>
+                    </form>
+                </x-slot>
+            </x-confirm-dialog>
         </li>
     @endforeach
 </ul>

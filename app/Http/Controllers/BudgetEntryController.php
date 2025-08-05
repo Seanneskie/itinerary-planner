@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBudgetEntryRequest;
+use App\Http\Requests\UpdateBudgetEntryRequest;
 use App\Models\BudgetEntry;
 use App\Models\Itinerary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class BudgetEntryController extends Controller
 {
@@ -45,29 +46,9 @@ class BudgetEntryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBudgetEntryRequest $request)
     {
-        $itinerary = Itinerary::where('user_id', Auth::id())
-            ->with('groupMembers')
-            ->findOrFail($request->itinerary_id);
-
-        $validated = $request->validate([
-            'itinerary_id' => 'required|exists:itineraries,id',
-            'description' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'entry_date' => 'required|date',
-            'category' => 'nullable|string|max:255',
-            'participants' => 'array|nullable',
-            'participants.*' => [
-                'integer',
-                Rule::exists('group_members', 'id')->where('itinerary_id', $itinerary->id),
-            ],
-            'paid_participants' => 'array|nullable',
-            'paid_participants.*' => [
-                'integer',
-                Rule::exists('group_members', 'id')->where('itinerary_id', $itinerary->id),
-            ],
-        ]);
+        $validated = $request->validated();
 
         $validated['spent_amount'] = 0;
         $validated['participants'] = $request->input('participants', []);
@@ -83,9 +64,7 @@ class BudgetEntryController extends Controller
      */
     public function show(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $budgetEntry);
 
         $budgetEntry->load('itinerary.groupMembers');
 
@@ -97,9 +76,7 @@ class BudgetEntryController extends Controller
      */
     public function edit(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $budgetEntry->load('itinerary.groupMembers');
 
@@ -109,28 +86,11 @@ class BudgetEntryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, BudgetEntry $budgetEntry)
+    public function update(UpdateBudgetEntryRequest $request, BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
-        $validated = $request->validate([
-            'description' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'entry_date' => 'required|date',
-            'category' => 'nullable|string|max:255',
-            'participants' => 'array|nullable',
-            'participants.*' => [
-                'integer',
-                Rule::exists('group_members', 'id')->where('itinerary_id', $budgetEntry->itinerary->id),
-            ],
-            'paid_participants' => 'array|nullable',
-            'paid_participants.*' => [
-                'integer',
-                Rule::exists('group_members', 'id')->where('itinerary_id', $budgetEntry->itinerary->id),
-            ],
-        ]);
+        $validated = $request->validated();
 
         $validated['participants'] = $request->input('participants', []);
         $validated['paid_participants'] = $request->input('paid_participants', []);
@@ -145,9 +105,7 @@ class BudgetEntryController extends Controller
      */
     public function destroy(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('delete', $budgetEntry);
 
         $budgetEntry->delete();
 
@@ -156,18 +114,14 @@ class BudgetEntryController extends Controller
 
     public function editSpent(BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         return view('budgets.edit-spent', compact('budgetEntry'));
     }
 
     public function updateSpent(Request $request, BudgetEntry $budgetEntry)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $validated = $request->validate([
             'spent_amount' => 'required|numeric|min:0',
@@ -180,9 +134,7 @@ class BudgetEntryController extends Controller
 
     public function togglePaid(Request $request, BudgetEntry $budgetEntry, int $member)
     {
-        if (! $budgetEntry->itinerary || (int) $budgetEntry->itinerary->user_id !== (int) Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('update', $budgetEntry);
 
         $paid = $budgetEntry->paid_participants ?? [];
 

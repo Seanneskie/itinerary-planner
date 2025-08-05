@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreItineraryRequest;
+use App\Http\Requests\UpdateItineraryRequest;
 use App\Models\Itinerary;
 use App\Models\BudgetEntry;
 use Illuminate\Support\Facades\Auth;
@@ -52,15 +54,9 @@ class ItineraryController extends Controller
      * Store a newly created resource in storage.
      */
  
-    public function store(Request $request)
+    public function store(StoreItineraryRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'photo' => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
         $validated['user_id'] = Auth::id();
 
@@ -114,17 +110,11 @@ class ItineraryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateItineraryRequest $request, string $id)
     {
         $itinerary = Itinerary::where('user_id', Auth::id())->findOrFail($id);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'photo' => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('photo')) {
             $validated['photo_path'] = $request->file('photo')->store('itineraries', 'public');
@@ -148,9 +138,7 @@ class ItineraryController extends Controller
 
     public function exportExcel(Itinerary $itinerary)
     {
-        if ($itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $itinerary);
 
         $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
 
@@ -159,9 +147,7 @@ class ItineraryController extends Controller
 
     public function exportPdf(Itinerary $itinerary)
     {
-        if ($itinerary->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('view', $itinerary);
 
         $itinerary->load(['activities', 'groupMembers', 'bookings', 'budgetEntries']);
 
