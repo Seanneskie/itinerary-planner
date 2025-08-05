@@ -40,12 +40,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('itineraries.bookings', BookingController::class)->shallow()->only(['store', 'update', 'destroy']);
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/itineraries/create', [ItineraryController::class, 'create'])->name('itineraries.create');
-    Route::post('/itineraries', [ItineraryController::class, 'store'])->name('itineraries.store');
-    // web.php
-    Route::post('/activities', [ActivityController::class, 'store'])->name('activities.store');
-    Route::resource('activities', controller: ActivityController::class);
-});
-
 require __DIR__.'/auth.php';
