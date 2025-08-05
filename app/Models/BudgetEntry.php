@@ -8,6 +8,7 @@ class BudgetEntry extends Model
 {
     protected $fillable = [
         'itinerary_id',
+        'activity_id',
         'description',
         'amount',
         'spent_amount',
@@ -32,5 +33,10 @@ class BudgetEntry extends Model
     public function itinerary()
     {
         return $this->belongsTo(Itinerary::class);
+    }
+
+    public function activity()
+    {
+        return $this->belongsTo(Activity::class);
     }
 }
