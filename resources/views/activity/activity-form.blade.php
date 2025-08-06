@@ -19,7 +19,7 @@
     <form
         :action="activity.id
             ? ('/activities/' + activity.id)          /* PUT  → /activities/{id} */
-            : '{{ route('activities.store') }}'        /* POST → /activities      */"
+            : '{{ route('itineraries.activities.store', $itinerary->id) }}'        /* POST → /itineraries/{itinerary}/activities */"
         method="POST"
         enctype="multipart/form-data"
         class="space-y-6"
