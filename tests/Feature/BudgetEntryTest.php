@@ -123,4 +123,38 @@ class BudgetEntryTest extends TestCase
         $entry = BudgetEntry::first();
         $this->assertEquals([$member->id], $entry->paid_participants);
     }
+
+    public function test_pagination_counts_categories(): void
+    {
+        $user = User::factory()->create();
+
+        $itinerary = Itinerary::create([
+            'user_id' => $user->id,
+            'title' => 'Sample Trip',
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->addDay()->toDateString(),
+        ]);
+
+        foreach (range('A', 'L') as $letter) {
+            BudgetEntry::create([
+                'itinerary_id' => $itinerary->id,
+                'description' => 'Entry ' . $letter,
+                'amount' => 10.00,
+                'entry_date' => now()->toDateString(),
+                'category' => 'Cat ' . $letter,
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get(route('itineraries.budgets.index', $itinerary->id));
+
+        /** @var \Illuminate\Pagination\LengthAwarePaginator $paginator */
+        $paginator = $response->viewData('budgetEntries');
+
+        $this->assertEquals(12, $paginator->total());
+        $response->assertDontSee('Entry K', false);
+
+        $responsePage2 = $this->actingAs($user)->get(route('itineraries.budgets.index', $itinerary->id) . '?page=2');
+        $responsePage2->assertSee('Entry K', false);
+        $responsePage2->assertSee('Entry L', false);
+    }
 }
