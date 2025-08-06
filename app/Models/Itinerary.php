@@ -28,7 +28,7 @@ class Itinerary extends Model
 
     public function activities()
     {
-        return $this->hasMany(Activity::class);
+        return $this->hasMany(Activity::class)->orderBy('scheduled_at');
     }
 
     public function groupMembers()

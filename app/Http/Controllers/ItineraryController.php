@@ -20,7 +20,7 @@ class ItineraryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Itinerary::with(['activities', 'groupMembers', 'bookings'])
+        $query = Itinerary::with(['activities.budgetEntry', 'groupMembers', 'bookings', 'budgetEntries'])
             ->where('user_id', Auth::id());
 
         if ($request->filled('search')) {
@@ -80,6 +80,7 @@ class ItineraryController extends Controller
 
         $activities = $itinerary->activities()
             ->orderBy('scheduled_at')
+            ->with('budgetEntry')
             ->paginate(10);
 
         $primaryLocation = $activities->first()->location ?? null;

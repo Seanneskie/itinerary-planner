@@ -76,6 +76,21 @@
                               ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
             </div>
 
+            <!-- Budget Entry -->
+            <div class="flex flex-col space-y-1">
+                <label class="font-medium text-gray-700 dark:text-gray-300">Attach Budget Entry</label>
+                <select name="budget_entry_id" x-model="activity.budget_entry_id"
+                        class="px-3 py-2 rounded-md bg-gray-50 dark:bg-gray-900 dark:text-white
+                               ring-1 ring-inset ring-gray-300 focus:ring-primary focus:ring-2 outline-none">
+                    <option value="">None</option>
+                    @foreach($itinerary->budgetEntries as $entry)
+                        <option value="{{ $entry->id }}">
+                            {{ $entry->description }} (PHP{{ number_format($entry->amount, 2) }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Attire color -->
             <div class="flex flex-col space-y-1">
                 <label class="font-medium text-gray-700 dark:text-gray-300">Attire Color</label>

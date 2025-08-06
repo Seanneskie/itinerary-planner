@@ -29,6 +29,7 @@ class StoreActivityRequest extends FormRequest
             'title' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
+            'budget_entry_id' => 'nullable|exists:budget_entries,id',
             'attire_color' => 'nullable|string|max:255',
             'attire_note' => 'nullable|string|max:255',
             'note' => 'nullable|string',

@@ -50,7 +50,20 @@ class ActivityController extends Controller
 
         $activity = Activity::create($data);
 
-        if ($request->filled('budget')) {
+        if ($request->filled('budget_entry_id')) {
+            $budgetEntry = BudgetEntry::where('itinerary_id', $request->itinerary_id)
+                ->findOrFail($request->budget_entry_id);
+
+            $budgetEntry->activity()->associate($activity);
+            $budgetEntry->description = $request->title;
+            $budgetEntry->entry_date  = $request->scheduled_at;
+            if ($request->filled('budget')) {
+                $budgetEntry->amount = $request->budget;
+            }
+            $budgetEntry->save();
+
+            $activity->update(['budget' => $budgetEntry->amount]);
+        } elseif ($request->filled('budget')) {
             $activity->budgetEntry()->create([
                 'itinerary_id' => $request->itinerary_id,
                 'description'  => $request->title,
@@ -88,6 +101,8 @@ class ActivityController extends Controller
         $this->authorize('update', $activity);
 
         $validated = $request->validated();
+        $budgetEntryId = $validated['budget_entry_id'] ?? null;
+        unset($validated['budget_entry_id']);
 
         if ($request->hasFile('photo')) {
             $validated['photo_path'] = $request->file('photo')->store('activities', 'public');
@@ -95,16 +110,39 @@ class ActivityController extends Controller
 
         $activity->update($validated);
 
-        if (!is_null($activity->budget)) {
-            $activity->budgetEntry()->updateOrCreate([], [
-                'itinerary_id' => $activity->itinerary_id,
-                'description'  => $activity->title,
-                'amount'       => $activity->budget,
-                'entry_date'   => $activity->scheduled_at,
-                'category'     => 'Activity',
-            ]);
+        if ($budgetEntryId) {
+            $budgetEntry = BudgetEntry::where('itinerary_id', $activity->itinerary_id)
+                ->findOrFail($budgetEntryId);
+
+            // detach previous entry if different
+            if ($activity->budgetEntry && $activity->budgetEntry->id !== $budgetEntryId) {
+                $activity->budgetEntry()->update(['activity_id' => null]);
+            }
+
+            $budgetEntry->activity()->associate($activity);
+            $budgetEntry->description = $activity->title;
+            $budgetEntry->entry_date  = $activity->scheduled_at;
+            if (!is_null($activity->budget)) {
+                $budgetEntry->amount = $activity->budget;
+            }
+            $budgetEntry->save();
+
+            $activity->budget = $budgetEntry->amount;
+            $activity->save();
         } else {
-            $activity->budgetEntry()->delete();
+            // detach any existing linked entry
+            $activity->budgetEntry()->update(['activity_id' => null]);
+
+            if (!is_null($activity->budget)) {
+                $activity->budgetEntry()->create([
+                    'itinerary_id' => $activity->itinerary_id,
+                    'description'  => $activity->title,
+                    'amount'       => $activity->budget,
+                    'entry_date'   => $activity->scheduled_at,
+                    'category'     => 'Activity',
+                    'spent_amount' => 0,
+                ]);
+            }
         }
 
         return redirect()->back()->with('success', 'Activity updated successfully!');
@@ -117,7 +155,7 @@ class ActivityController extends Controller
     {
         $this->authorize('delete', $activity);
 
-        $activity->budgetEntry()->delete();
+        $activity->budgetEntry()->update(['activity_id' => null]);
         $activity->delete();
 
         return redirect()->back()->with('success', 'Activity deleted.');
