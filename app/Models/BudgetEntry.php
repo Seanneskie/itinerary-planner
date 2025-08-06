@@ -18,6 +18,8 @@ class BudgetEntry extends Model
         'paid_participants',
     ];
 
+    protected $touches = ['activity'];
+
     /**
      * Cast attributes to common types.
      */

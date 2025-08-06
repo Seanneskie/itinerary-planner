@@ -13,13 +13,13 @@ class Activity extends Model
         'location',
         'note',
         'scheduled_at',
-        'budget',
         'attire_color',
         'attire_note',
         'latitude',
         'longitude',
         'photo_path',
     ];
+
 
     /**
      * Cast attributes to common types.
@@ -44,4 +44,8 @@ class Activity extends Model
         return $this->hasOne(BudgetEntry::class);
     }
 
+    public function getBudgetAttribute()
+    {
+        return $this->budgetEntry->amount ?? null;
+    }
 }

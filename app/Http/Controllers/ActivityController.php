@@ -6,10 +6,9 @@ use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Models\Activity;
 use App\Models\BudgetEntry;
-use Illuminate\Support\Facades\Auth;
+
 class ActivityController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      */
@@ -35,7 +34,6 @@ class ActivityController extends Controller
             'itinerary_id' => $request->itinerary_id,
             'title' => $request->title,
             'location' => $request->location,
-            'budget' => $request->budget,
             'attire_color' => $request->attire_color,
             'attire_note' => $request->attire_note,
             'note' => $request->note,
@@ -50,26 +48,26 @@ class ActivityController extends Controller
 
         $activity = Activity::create($data);
 
+        $budget = $request->budget;
+
         if ($request->filled('budget_entry_id')) {
             $budgetEntry = BudgetEntry::where('itinerary_id', $request->itinerary_id)
                 ->findOrFail($request->budget_entry_id);
 
             $budgetEntry->activity()->associate($activity);
             $budgetEntry->description = $request->title;
-            $budgetEntry->entry_date  = $request->scheduled_at;
-            if ($request->filled('budget')) {
-                $budgetEntry->amount = $request->budget;
+            $budgetEntry->entry_date = $request->scheduled_at;
+            if (! is_null($budget)) {
+                $budgetEntry->amount = $budget;
             }
             $budgetEntry->save();
-
-            $activity->update(['budget' => $budgetEntry->amount]);
-        } elseif ($request->filled('budget')) {
+        } elseif (! is_null($budget)) {
             $activity->budgetEntry()->create([
                 'itinerary_id' => $request->itinerary_id,
-                'description'  => $request->title,
-                'amount'       => $request->budget,
-                'entry_date'   => $request->scheduled_at,
-                'category'     => 'Activity',
+                'description' => $request->title,
+                'amount' => $budget,
+                'entry_date' => $request->scheduled_at,
+                'category' => 'Activity',
                 'spent_amount' => 0,
             ]);
         }
@@ -102,7 +100,8 @@ class ActivityController extends Controller
 
         $validated = $request->validated();
         $budgetEntryId = $validated['budget_entry_id'] ?? null;
-        unset($validated['budget_entry_id']);
+        $budget = $validated['budget'] ?? null;
+        unset($validated['budget_entry_id'], $validated['budget']);
 
         if ($request->hasFile('photo')) {
             $validated['photo_path'] = $request->file('photo')->store('activities', 'public');
@@ -121,25 +120,22 @@ class ActivityController extends Controller
 
             $budgetEntry->activity()->associate($activity);
             $budgetEntry->description = $activity->title;
-            $budgetEntry->entry_date  = $activity->scheduled_at;
-            if (!is_null($activity->budget)) {
-                $budgetEntry->amount = $activity->budget;
+            $budgetEntry->entry_date = $activity->scheduled_at;
+            if (! is_null($budget)) {
+                $budgetEntry->amount = $budget;
             }
             $budgetEntry->save();
-
-            $activity->budget = $budgetEntry->amount;
-            $activity->save();
         } else {
             // detach any existing linked entry
             $activity->budgetEntry()->update(['activity_id' => null]);
 
-            if (!is_null($activity->budget)) {
+            if (! is_null($budget)) {
                 $activity->budgetEntry()->create([
                     'itinerary_id' => $activity->itinerary_id,
-                    'description'  => $activity->title,
-                    'amount'       => $activity->budget,
-                    'entry_date'   => $activity->scheduled_at,
-                    'category'     => 'Activity',
+                    'description' => $activity->title,
+                    'amount' => $budget,
+                    'entry_date' => $activity->scheduled_at,
+                    'category' => 'Activity',
                     'spent_amount' => 0,
                 ]);
             }
