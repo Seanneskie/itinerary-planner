@@ -16,6 +16,19 @@ class Booking extends Model
         'longitude',
     ];
 
+    /**
+     * Cast attributes to common types.
+     */
+    protected function casts(): array
+    {
+        return [
+            'check_in' => 'date',
+            'check_out' => 'date',
+            'latitude' => 'float',
+            'longitude' => 'float',
+        ];
+    }
+
     public function itinerary()
     {
         return $this->belongsTo(Itinerary::class);
