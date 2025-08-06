@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateBudgetEntryRequest;
 use App\Models\BudgetEntry;
 use App\Models\Itinerary;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
 class BudgetEntryController extends Controller
@@ -22,10 +23,61 @@ class BudgetEntryController extends Controller
             ->with('groupMembers')
             ->findOrFail($itinerary);
 
-        $budgetEntries = BudgetEntry::where('itinerary_id', $itinerary->id)
-            ->when($filter, fn ($q) => $q->where('category', $filter))
-            ->paginate(10)
-            ->withQueryString();
+        $perPage = 10;
+
+        if ($filter) {
+            $entries = BudgetEntry::where('itinerary_id', $itinerary->id)
+                ->where('category', $filter)
+                ->get();
+
+            $budgetEntries = new LengthAwarePaginator(
+                $entries,
+                1,
+                $perPage,
+                1,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        } else {
+            $page = LengthAwarePaginator::resolveCurrentPage();
+
+            $categoryQuery = BudgetEntry::where('itinerary_id', $itinerary->id)
+                ->select('category')
+                ->distinct();
+
+            $totalCategories = (clone $categoryQuery)->count();
+
+            $pageCategories = (clone $categoryQuery)
+                ->orderBy('category')
+                ->skip(($page - 1) * $perPage)
+                ->take($perPage)
+                ->pluck('category')
+                ->all();
+
+            $entriesQuery = BudgetEntry::where('itinerary_id', $itinerary->id);
+
+            if (in_array(null, $pageCategories, true)) {
+                $entriesQuery->where(function ($q) use ($pageCategories) {
+                    $nonNull = array_filter($pageCategories, fn ($c) => !is_null($c));
+                    if ($nonNull) {
+                        $q->whereIn('category', $nonNull)->orWhereNull('category');
+                    } else {
+                        $q->whereNull('category');
+                    }
+                });
+            } else {
+                $entriesQuery->whereIn('category', $pageCategories);
+            }
+
+            $entries = $entriesQuery->get();
+
+            $budgetEntries = new LengthAwarePaginator(
+                $entries,
+                $totalCategories,
+                $perPage,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        }
 
         $categories = BudgetEntry::where('itinerary_id', $itinerary->id)
             ->pluck('category')
