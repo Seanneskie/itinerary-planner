@@ -13,13 +13,14 @@ class Activity extends Model
         'location',
         'note',
         'scheduled_at',
-        'budget',
         'attire_color',
         'attire_note',
         'latitude',
         'longitude',
         'photo_path',
     ];
+
+    protected $appends = ['budget'];
 
     public function itinerary()
     {
@@ -31,4 +32,8 @@ class Activity extends Model
         return $this->hasOne(BudgetEntry::class);
     }
 
+    public function getBudgetAttribute()
+    {
+        return $this->budgetEntry->amount ?? null;
+    }
 }
