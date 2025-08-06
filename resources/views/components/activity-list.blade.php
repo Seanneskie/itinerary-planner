@@ -1,15 +1,27 @@
 @props(['activities'])
 
 @php
+    $collection = $activities instanceof \Illuminate\Contracts\Pagination\Paginator
+        ? collect($activities->items())
+        : collect($activities);
     $start = ($activities instanceof \Illuminate\Contracts\Pagination\Paginator)
         ? $activities->firstItem()
         : 1;
-    $itemCount = count($activities);
+    $groupedActivities = $collection
+        ->sortBy('scheduled_at')
+        ->groupBy(fn($a) => \Carbon\Carbon::parse($a->scheduled_at)->toDateString());
+    $itemCount = $collection->count();
+    $globalIndex = 0;
 @endphp
 <div x-data="{ limit: 5, count: {{ $itemCount }} }">
-    <ul id="activity-list"
-        class="mt-4 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
-    @foreach ($activities as $index => $activity)
+    <div id="activity-list">
+    @foreach ($groupedActivities as $date => $dayActivities)
+        <h4 class="mt-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
+            {{ \Carbon\Carbon::parse($date)->format('F j, Y') }}
+        </h4>
+        <ul class="mt-2 space-y-3 divide-y divide-gray-200 dark:divide-gray-700">
+        @foreach ($dayActivities as $activity)
+        @php $index = $globalIndex; $globalIndex++; @endphp
         <li
             x-data="{ openDelete: false }"
             x-show="{{ $index }} < limit"
@@ -88,6 +100,7 @@
                 <button type="button"
                    @click.prevent.stop="
                        activity      = {{ $activity->toJson() }};
+                       activity.budget_entry_id = {{ $activity->budgetEntry->id ?? 'null' }};
                        openEditModal = true;
                        $dispatch('open-modal', { detail: 'edit-activity-{{ $activity->itinerary_id }}' })
                    "
@@ -117,8 +130,10 @@
             </div>
         </div>
         </li>
+        @endforeach
+        </ul>
     @endforeach
-    </ul>
+    </div>
     <button
         x-show="count > 5"
         @click="limit = limit === 5 ? count : 5"
