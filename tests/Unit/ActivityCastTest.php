@@ -28,10 +28,20 @@ class ActivityCastTest extends TestCase
             'itinerary_id' => $itinerary->id,
             'title' => 'Hiking',
             'scheduled_at' => '2024-01-01 10:00:00',
-            'budget' => '123.45',
             'latitude' => '10.1234567',
             'longitude' => '20.7654321',
-        ])->fresh();
+        ]);
+
+        $activity->budgetEntry()->create([
+            'itinerary_id' => $itinerary->id,
+            'description' => 'Hiking',
+            'amount' => 123.45,
+            'entry_date' => '2024-01-01',
+            'category' => 'Activity',
+            'spent_amount' => 0,
+        ]);
+
+        $activity->refresh();
 
         $this->assertInstanceOf(Carbon::class, $activity->scheduled_at);
         $this->assertSame('2024-01-01 10:00:00', $activity->scheduled_at->format('Y-m-d H:i:s'));
